@@ -1,17 +1,13 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Register from "./pages/register.jsx"; // Use PascalCase for components
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-const App = () => {
+function App() {
   return (
     <div>
-      <Router>
-        <Routes>
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </Router>
+      <h1>Welcome to the App</h1>
+      <Link to="/register">Register</Link>
     </div>
   );
-};
+}
 
 export default App;

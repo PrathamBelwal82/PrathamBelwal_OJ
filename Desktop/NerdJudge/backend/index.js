@@ -12,52 +12,37 @@ app.use(express.json());
 
 dotenv.config();
 
-
-
 DBConnection();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-
-
-
-app.get('/', (req, res) => {
-    res.send('Welcome!');
-});
-
-app.post("/register",async(req,res)=>{
+app.post("/register", async (req, res) => {
     try {
-        //get all data
-        const {firstName,lastName,email,password,confirmPassword}=req.body;
-        //all data exists
-        if(!(firstName && lastName && email && password) && password!==confirmPassword){
-            return res.status(400).send("Check Again");
-        }
-        //check if user exists
-        const existingUser =await User.findOne({email});
-        if(existingUser){
-            return res.status(400).send("Error");
+        const { firstName, lastName, email, password, confirmPassword } = req.body;
+
+        if (!firstName || !lastName || !email || !password || password !== confirmPassword) {
+            return res.status(400).json({ error: "Check Again" });
         }
 
-        //encrypt password
-        const hashPassword=bcrypt.hashSync(password,8);
-        console.log(hashPassword);
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: "User already exists" });
+        }
 
-        //save user to the database
-        const user= await User.create({
-            firstName,lastName,email,password:hashPassword
+        const hashPassword = bcrypt.hashSync(password, 8);
+
+        const user = await User.create({
+            firstName, lastName, email, password: hashPassword
         });
-        
-        //generate a token for user and send it
-        const token = jwt.sign({ id: user._id, email }, process.env.SECRET_KEY, {expiresIn: "15d",});
+
+        const token = jwt.sign({ id: user._id, email }, process.env.SECRET_KEY, { expiresIn: "15d" });
         user.token = token;
         user.password = undefined;
-        res.status(200).json({ message: "registered!", user });
+        
+        res.status(200).json({ message: "Registered!", user });
     
     } catch (error) {
-              console.log("error");
-    }
+        console.log("Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
 
 app.listen(8000, () => {

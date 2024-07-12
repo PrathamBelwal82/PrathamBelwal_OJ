@@ -1,73 +1,85 @@
-import { useState } from 'react'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+function Register() {
+    const navigate = useNavigate();
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
 
-function register() {
-	
+    async function registerUser(event) {
+        event.preventDefault();
 
-	const [firstName, setfirstName] = useState('')
-    const [lastName, setlastName] = useState('')
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
+        const response = await fetch('http://localhost:8000/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                firstName,
+                lastName,
+                email,
+                password,
+                confirmPassword,
+            }),
+        });
 
-	async function registerUser(event) {
-		event.preventDefault()
+        const data = await response.json();
 
-		const response = await fetch('http://localhost:8000/register', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				name,
-				email,
-				password,
-			}),
-		})
+        if (response.status === 200) {
+            navigate('/register');
+        } else {
+            setError(data.error);
+        }
+    }
 
-		const data = await response.json()
-
-		if (data.status === 'ok') {
-			history.push('/login')
-		}
-	}
-
-	return (
-		<div>
-			<h1>Register</h1>
-			<form onSubmit={registerUser}>
-				<input
-					value={firstName}
-					onChange={(e) => setfirstName(e.target.value)}
-					type="text"
-					placeholder="Name"
-				/>
-                <br/>
+    return (
+        <div>
+            <h1>Register</h1>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            <form onSubmit={registerUser}>
                 <input
-					value={lastName}
-					onChange={(e) => setlastName(e.target.value)}
-					type="text"
-					placeholder="Name"
-				/>
-                <br/>
-				<br />
-				<input
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-					type="email"
-					placeholder="Email"
-				/>
-				<br />
-				<input
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-					type="password"
-					placeholder="Password"
-				/>
-				<br />
-				<input type="submit" value="Register" />
-			</form>
-		</div>
-	)
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    type="text"
+                    placeholder="First Name"
+                />
+                <br />
+                <input
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    type="text"
+                    placeholder="Last Name"
+                />
+                <br />
+                <input
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    type="email"
+                    placeholder="Email"
+                />
+                <br />
+                <input
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    type="password"
+                    placeholder="Password"
+                />
+                <br />
+                <input
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    type="password"
+                    placeholder="Confirm Password"
+                />
+                <br />
+                <input type="submit" value="Register" />
+            </form>
+        </div>
+    );
 }
 
-export default register
+export default Register;
