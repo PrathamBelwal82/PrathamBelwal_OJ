@@ -7,7 +7,7 @@ import Home from './home'
 import Dashboard from './dashBoard'
 import Problems from './problems'
 import PrivateRoute from './privateRoute';
-
+import ProblemDetail from './ProblemDetail';
 const container = document.getElementById('root');
 const root = createRoot(container);
 
@@ -27,6 +27,7 @@ root.render(
         />
         <Route path="/dashboard" element={ <PrivateRoute><Dashboard /></PrivateRoute>} />
         <Route path="/problems" element={ <PrivateRoute><Problems /></PrivateRoute>} />
+        <Route path="/problems/:id" element={<PrivateRoute><ProblemDetail/></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
