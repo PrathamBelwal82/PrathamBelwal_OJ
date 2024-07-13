@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
@@ -10,73 +10,84 @@ function Register() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
 
-    async function registerUser(event) {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const response = await fetch('http://localhost:8000/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                firstName,
-                lastName,
-                email,
-                password,
-                confirmPassword,
-            }),
-        });
+        try {
+            const response = await fetch('http://localhost:8000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                    confirmPassword,
+                }),
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (response.status === 200) {
-            navigate('/register');
-        } else {
-            setError(data.error);
+            if (response.status === 200) {
+                localStorage.setItem('token', data.user.token);
+                navigate('/home'); 
+            } else {
+                setError(data.error || 'Registration failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error registering user:', error);
+            setError('Registration failed. Please try again later.');
         }
-    }
+    };
 
     return (
         <div>
             <h1>Register</h1>
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={registerUser}>
+            <form onSubmit={handleSubmit}>
                 <input
+                    type="text"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    type="text"
                     placeholder="First Name"
+                    required
                 />
                 <br />
                 <input
+                    type="text"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    type="text"
                     placeholder="Last Name"
+                    required
                 />
                 <br />
                 <input
+                    type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    type="email"
                     placeholder="Email"
+                    required
                 />
                 <br />
                 <input
+                    type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    type="password"
                     placeholder="Password"
+                    required
                 />
                 <br />
                 <input
+                    type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    type="password"
                     placeholder="Confirm Password"
+                    required
                 />
                 <br />
-                <input type="submit" value="Register" />
+                <button type="submit">Register</button>
             </form>
         </div>
     );

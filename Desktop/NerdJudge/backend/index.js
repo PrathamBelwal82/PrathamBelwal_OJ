@@ -9,19 +9,23 @@ const cors = require('cors');
 
 app.use(cors());
 app.use(express.json());
-
+app.use(express.urlencoded({extended:true}));
 dotenv.config();
 
 DBConnection();
 
+
 app.post("/register", async (req, res) => {
     try {
-        const { firstName, lastName, email, password, confirmPassword } = req.body;
+        const { firstName, lastName, email, password,confirmPassword } = req.body;
 
-        if (!firstName || !lastName || !email || !password || password !== confirmPassword) {
+        if (!firstName || !lastName || !email || !password ) {
             return res.status(400).json({ error: "Check Again" });
         }
 
+        if (password!==confirmPassword ) {
+            return res.status(400).json({ error: "Check Again" });
+        }
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: "User already exists" });
@@ -33,7 +37,7 @@ app.post("/register", async (req, res) => {
             firstName, lastName, email, password: hashPassword
         });
 
-        const token = jwt.sign({ id: user._id, email }, process.env.SECRET_KEY, { expiresIn: "15d" });
+        const token = jwt.sign({ id: user._id, email }, process.env.SECRET_KEY);
         user.token = token;
         user.password = undefined;
         
