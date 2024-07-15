@@ -8,7 +8,7 @@ function Submissions() {
 
   useEffect(() => {
     const fetchSubmissions = async () => {
-      const response = await fetch(`http://localhost:8000/problems/${id}/submissions`);
+      const response = await fetch(`http://localhost:8000/problems/submissions`);
       const data = await response.json();
       setSubmissions(data);
     };

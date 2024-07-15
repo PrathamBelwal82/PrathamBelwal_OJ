@@ -18,6 +18,7 @@ function App() {
       <Route path="/problems/:id/submissions" element={<Submissions />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      
     </Routes>
   );
 }

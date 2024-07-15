@@ -1,20 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Typography, Button, TextField } from '@mui/material';
+import axios from 'axios';
 
 function ProblemDetail() {
-  const { id } = useParams();
-  const [problem, setProblem] = useState(null);
+  const [problem, setProblem] = useState({});
   const [file, setFile] = useState(null);
+  const [message, setMessage] = useState('');
+  const fileInputRef = useRef();
+  const { id } = useParams(); // Get the problem ID from the URL
 
   useEffect(() => {
-    const fetchProblem = async () => {
-      const response = await fetch(`http://localhost:8000/problems/${id}`);
-      const data = await response.json();
-      setProblem(data);
+    const fetchProblemDetails = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/problems/${id}`);
+        setProblem(response.data); // Assuming your API returns problem details as JSON
+      } catch (error) {
+        console.error('Error fetching problem details:', error);
+      }
     };
 
-    fetchProblem();
+    fetchProblemDetails();
   }, [id]);
 
   const handleFileChange = (e) => {
@@ -23,29 +28,39 @@ function ProblemDetail() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('problemId', id);
+    if (!file) {
+      setMessage('Please upload a file');
+      return;
+    }
 
-    await fetch('http://localhost:8000/submissions', {
-      method: 'POST',
-      body: formData,
-    });
+    const formData = new FormData();
+    formData.append('problemId', id);
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post('http://localhost:8000/submissions/submit', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      setMessage(response.data.message);
+    } catch (error) {
+      setMessage('Failed to submit file');
+      console.error('Error submitting file:', error);
+    }
   };
 
-  if (!problem) return <p>Loading...</p>;
-
   return (
-    <Container>
-      <Typography variant="h4">{problem.title}</Typography>
-      <Typography variant="body1">{problem.description}</Typography>
+    <div>
+      <h2>{problem.title}</h2>
+      <p>{problem.description}</p>
       <form onSubmit={handleSubmit}>
-        <input type="file" onChange={handleFileChange} />
-        <Button type="submit" variant="contained" color="primary">
-          Submit
-        </Button>
+        <input type="file" ref={fileInputRef} onChange={handleFileChange} />
+        <button type="submit">Submit</button>
       </form>
-    </Container>
+      {message && <p>{message}</p>}
+    </div>
   );
 }
 
