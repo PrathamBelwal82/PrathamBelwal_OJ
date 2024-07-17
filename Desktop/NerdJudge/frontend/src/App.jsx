@@ -15,10 +15,9 @@ function App() {
       <Route path="/problems" element={<Problems />} />
       <Route path="/problems/add" element={<ProblemAdd />} />
       <Route path="/problems/:id" element={<ProblemDetail />} />
-      <Route path="/problems/:id/submissions" element={<Submissions />} />
+      <Route path="/submissions" element={<Submissions />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      
     </Routes>
   );
 }

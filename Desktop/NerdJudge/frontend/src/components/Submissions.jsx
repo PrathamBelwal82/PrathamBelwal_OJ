@@ -1,32 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Typography, List, ListItem, ListItemText } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 function Submissions() {
-  const { id } = useParams();
   const [submissions, setSubmissions] = useState([]);
 
   useEffect(() => {
-    const fetchSubmissions = async () => {
-      const response = await fetch(`http://localhost:8000/problems/submissions`);
-      const data = await response.json();
-      setSubmissions(data);
-    };
-
     fetchSubmissions();
-  }, [id]);
+  }, []);
+   const fetchSubmissions = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/submissions');
+      setSubmissions(response.data);
+    } catch (error) {
+      console.error('Error fetching submissions:', error);
+    }
+  };
+
 
   return (
-    <Container>
-      <Typography variant="h4">Submissions</Typography>
-      <List>
-        {submissions.map((submission) => (
-          <ListItem key={submission._id}>
-            <ListItemText primary={submission.fileName} />
-          </ListItem>
-        ))}
-      </List>
-    </Container>
+        <div>
+          <h2>Submissions</h2>
+          <ul>
+            {submissions.map((submission) => (
+              <li key={submission._id}>
+                <span>Problem ID: {submission.problemId}</span>
+                <span>File: <a href={submission.filePath} target="_blank" rel="noopener noreferrer">Download</a></span>
+              </li>
+            ))}
+          </ul>
+        </div>
   );
 }
 

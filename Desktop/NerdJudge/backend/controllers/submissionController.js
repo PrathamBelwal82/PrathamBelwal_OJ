@@ -1,4 +1,4 @@
-const Submission = require('../models/Submission');
+const Submission = require('../models/Submissions');
 
 exports.addSubmission = async (req, res) => {
     const { userId, problemId } = req.body;

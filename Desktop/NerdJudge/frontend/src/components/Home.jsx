@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '../components/AuthContext';
+import { useAuth } from './AuthContext';
 import { AppBar, Toolbar, Typography, Button, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
 
@@ -20,6 +20,9 @@ const Home = () => {
             </Button>
             <Button color="inherit" component={Link} to="/problems">
                 Problems
+              </Button>
+              <Button color="inherit" component={Link} to="/submissions">
+                Submissions
               </Button>
             </div>
           ) : (

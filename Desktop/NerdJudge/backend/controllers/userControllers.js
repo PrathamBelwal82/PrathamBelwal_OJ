@@ -2,16 +2,33 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User'); // Adjust path as per your setup
 
+const jwt = require('jsonwebtoken');
+
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({ message: 'No token, authorization denied' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Attach the decoded user info to the request object
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Token is not valid' });
+  }
+
+
+
 // Fetch all users
-router.get('/', async (req, res) => {
+router.get('/user', authMiddleware, async (req, res) => {
     try {
-        const users = await User.find();
-        res.status(200).json(users);
+      const user = await User.findById(req.user.userId).select('-password');
+      res.status(200).json(user);
     } catch (error) {
-        console.error('Failed to fetch users:', error);
-        res.status(500).json({ error: 'Failed to fetch users' });
+      res.status(500).json({ message: 'Server error', error: error.message });
     }
-});
+  });
 
 // Fetch user by ID
 router.get('/:id', async (req, res) => {

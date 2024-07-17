@@ -344,23 +344,6 @@ string postfix(string s1)
     }
 */
 
-int mx = 0;
-void solve(vi adj[], int node, int vis[], int vis1[], int ct)
-{
-    vis[node] = 1;
-    vis1[node] = 1;
-    for (auto x : adj[node])
-    {
-        if (vis[x] == 0)
-        {
-            solve(adj, node, vis, vis1, ct);
-        }
-        if (vis1[x] == 0)
-        {
-            solve(adj, node, vis, vis1, ct);
-        }
-    }
-}
 int32_t main()
 {
     ios::sync_with_stdio(0);
@@ -369,30 +352,107 @@ int32_t main()
 
     w(t1)
     {
-        in(n);
-        pair<string, string> p[n];
+        intake(a, n);
+        int b[21] = {0};
+        int c[21] = {0};
+        int d[21] = {0};
+        int e[21] = {0};
+        int f[21] = {0};
+        int g[21] = {0};
         f(i, n)
         {
-            string s1, s2;
-            cin >> s1 >> s2;
-            pair<string, string> p1 = mp(s1, s2);
-            p[i] = p1;
-        }
-        vi adj[n];
-        for (int i = 0; i < n - 1; i++)
-        {
-            for (int j = i + 1; j < n; j++)
+            int k = a[i];
+            int ct = 0;
+            int z = 0;
+            while (ct < 21)
             {
-                if (p[i].first == p[j].first || (p[i].second == p[j].second))
+                if (k % 2 == 0)
                 {
-                    adj[i].pb(j);
-                    adj[j].pb(i);
+                    if (e[ct] % 2 != 0)
+                    {
+                        c[ct]++;
+                    }
                 }
+                else
+                {
+                    e[ct]++;
+                    if (e[ct] % 2 != 0)
+                    {
+                        c[ct]++;
+                    }
+                }
+                k /= 2;
+                ct++;
             }
         }
-        int vis[n] = {0};
-        int vis1[n] = {0};
-        mx = 0;
+        f(i, 21)
+        {
+            e[i] = 0;
+        }
+
+        int ans = 0;
+        for (int i = 0; i < n; i++)
+        {
+            int k = a[i];
+            int ct = 0;
+
+            int num = n - i;
+            while (ct < 21)
+            {
+                if (k % 2 == 1)
+                {
+                    c[ct] = num - c[ct];
+                    e[ct]++;
+                }
+                else
+                {
+                    if (e[ct] % 2 != 0)
+                        c[ct]--;
+                }
+                ct++;
+                k /= 2;
+            }
+            int k1 = log2(a[i]);
+            ans += b[k1] + c[k1];
+            cout << ans << ' ' << b[k1] << " ";
+            ans += c[k1] * (i - b[k1]);
+            cout << ans << ' ';
+            ans += (n - 1 - i - c[k1]) * b[k1];
+            k = a[i];
+            cout << ans << ' ';
+            cout << endl;
+            ct = 0;
+            int z1 = 0, z2 = 0;
+            while (ct < 21)
+            {
+                if (k % 2 == 0)
+                {
+                    if (d[ct] % 2 != 0)
+                    {
+                        f[ct]++;
+                    }
+                    else
+                    {
+                        g[ct]++;
+                    }
+                }
+                else
+                {
+                    d[ct]++;
+                    if (d[ct] % 2 == 0)
+                    {
+                        b[ct] = f[ct] + (d[ct] / 2);
+                    }
+                    else
+                    {
+                        b[ct] = g[ct] + (d[ct] / 2) + 1;
+                    }
+                }
+                k /= 2;
+                ct++;
+            }
+        }
+        cout << ans << endl;
     }
     return 0;
 }

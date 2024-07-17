@@ -1,10 +1,9 @@
 const express = require('express');
-
 const path = require('path');
-const {DBConnection}=require('./database/db')
+const { DBConnection } = require('./database/db');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const Submission = require('./models/Submissions');
+
 dotenv.config();
 
 
@@ -22,8 +21,8 @@ DBConnection();
 const authRoutes = require('./routes/auth');
 const problemRoutes = require('./routes/problems');
 const submissionRoutes = require('./routes/submissions');
-
-//const submissionRoutes = require('./routes/submissions');
+const userRoutes=require('./routes/users');
+const executeCodeRouter = require('./routes/executeCode');
 
 // Start Server
 const PORT = process.env.PORT || 8000;
@@ -31,10 +30,8 @@ const PORT = process.env.PORT || 8000;
 app.use('/', authRoutes);
 app.use('/problems', problemRoutes);
 app.use('/submissions', submissionRoutes);
-//app.use('/problems', submissionRoutes);
-
-
-
+app.use('/users',userRoutes);
+app.use('/execute', executeCodeRouter);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

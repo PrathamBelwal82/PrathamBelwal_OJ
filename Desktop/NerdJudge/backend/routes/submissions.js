@@ -29,7 +29,7 @@ router.post('/submit', upload.single('file'), async (req, res) => {
     await submission.save();
     res.status(200).json({ message: 'File uploaded successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to submit file', error: error.message });
+    res.status(500).json({ message: 'Failed to submit file', error: errzor.message });
   }
 });
 
