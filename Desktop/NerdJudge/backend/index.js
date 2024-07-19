@@ -3,35 +3,41 @@ const path = require('path');
 const { DBConnection } = require('./database/db');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
 
 dotenv.config();
 
-
 const app = express();
 
-// Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // Allow requests from your frontend
+  credentials: true // Allow cookies and authentication headers
+}));
+
 app.use(express.json());
+app.use(cookieParser());
+
 app.use(express.urlencoded({ extended: true }));
 
 // Database Connection
 DBConnection();
 
 // Routes
-const authRoutes = require('./routes/auth');
-const problemRoutes = require('./routes/problems');
-const submissionRoutes = require('./routes/submissions');
-const userRoutes=require('./routes/users');
+const authRoutes = require('./routes/auth.js');
+const problemRoutes = require('./routes/problems.js');
+const submissionRoutes = require('./routes/submissions.js');
+const userRoutes = require('./routes/users.js');
 const executeCodeRouter = require('./routes/executeCode');
 
-// Start Server
-const PORT = process.env.PORT || 8000;
-
+// Use routes
 app.use('/', authRoutes);
 app.use('/problems', problemRoutes);
 app.use('/submissions', submissionRoutes);
-app.use('/users',userRoutes);
+app.use('/users', userRoutes);
 app.use('/execute', executeCodeRouter);
+
+// Start Server
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

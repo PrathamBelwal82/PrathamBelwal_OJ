@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { useAuth } from '../components/AuthContext';
 function Register() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -8,7 +8,7 @@ function Register() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
-
+    const { login } = useAuth();
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -29,7 +29,8 @@ function Register() {
             const data = await response.json();
             if (response.ok) {
                 alert('Registration successful! Please log in.');
-                navigate('/login');
+                login(data);
+                navigate('/');
             } else {
                 alert(data.message || 'Registration failed. Please try again.');
             }

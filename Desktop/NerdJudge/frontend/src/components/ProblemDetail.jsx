@@ -6,6 +6,7 @@ import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism.css';
+import { useAuth } from './AuthContext';
 
 function ProblemDetail() {
   const [problem, setProblem] = useState({});
@@ -15,6 +16,7 @@ function ProblemDetail() {
   const [output, setOutput] = useState('');
   const fileInputRef = useRef();
   const { id } = useParams();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchProblemDetails = async () => {
@@ -57,29 +59,28 @@ function ProblemDetail() {
           'Content-Type': 'multipart/form-data',
         },
       });
-
+      console.log('File submission response:', response.data); // Debugging tip
       setMessage(response.data.message);
     } catch (error) {
+      console.error('Error submitting file:', error); // Debugging tip
       setMessage('Failed to submit file');
-      console.error('Error submitting file:', error);
     }
   };
 
   const handleRun = async () => {
-  const payload = {
-    language: 'cpp',
-    code:codeContent
+    const payload = {
+      language: 'cpp',
+      code: codeContent,
+    };
+
+    try {
+      const { data } = await axios.post('http://localhost:8000/execute/run', payload);
+      console.log('Code execution response:', data); // Debugging tip
+      setOutput(data.output);
+    } catch (error) {
+      console.log('Error executing code:', error.response); // Debugging tip
+    }
   };
-
-  try {
-    const { data } = await axios.post('http://localhost:8000/execute/run', payload);
-    console.log(data);
-    setOutput(data.output);
-  } catch (error) {
-    console.log(error.response);
-  }
-}
-
 
   return (
     <div>
@@ -94,14 +95,14 @@ function ProblemDetail() {
         <h3>Code Preview</h3>
         <Editor
           value={codeContent}
-          onValueChange={code => setCodeContent(code)}
-          highlight={code => highlight(code, languages.js)}
+          onValueChange={(code) => setCodeContent(code)}
+          highlight={(code) => highlight(code, languages.js)}
           padding={10}
           style={{
             fontFamily: '"Fira code", "Fira Mono", monospace',
             fontSize: 12,
             border: '1px solid #ddd',
-            marginTop: '10px'
+            marginTop: '10px',
           }}
         />
       </div>

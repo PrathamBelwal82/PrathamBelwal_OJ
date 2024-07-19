@@ -8,6 +8,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import PrivateRoute from './components/PrivateRoute';
 import ProblemAdd from './components/ProblemAdd';
+import UserSubmissions from './components/UserSubmissions';
 function App() {
   return (
     <Routes>
@@ -18,6 +19,7 @@ function App() {
       <Route path="/submissions" element={<Submissions />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/usersubmissions" element={<UserSubmissions />} />
     </Routes>
   );
 }

@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User'); // Adjust path as per your setup
-
+const User = require('../models/Users'); // Adjust path as per your setup
+const verifyToken = require('../middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
 
-  const token = req.cookies.token;
+const token = req.cookies.token;
 
-  if (!token) {
+if (!token) {
     return res.status(401).json({ message: 'No token, authorization denied' });
   }
 
@@ -21,7 +21,7 @@ const jwt = require('jsonwebtoken');
 
 
 // Fetch all users
-router.get('/user', authMiddleware, async (req, res) => {
+router.get('/', verifyToken, async (req, res) => {
     try {
       const user = await User.findById(req.user.userId).select('-password');
       res.status(200).json(user);

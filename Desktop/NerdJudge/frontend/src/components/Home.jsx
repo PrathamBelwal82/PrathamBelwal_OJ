@@ -21,8 +21,11 @@ const Home = () => {
             <Button color="inherit" component={Link} to="/problems">
                 Problems
               </Button>
-              <Button color="inherit" component={Link} to="/submissions">
+              <Button color="inherit" component={Link} to="/usersubmissions">
                 Submissions
+              </Button>
+              <Button color="inherit" component={Link} to="/problems/add">
+                Add Problems
               </Button>
             </div>
           ) : (

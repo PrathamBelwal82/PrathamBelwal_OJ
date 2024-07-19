@@ -1,12 +1,9 @@
-const express = require('express');
-const bcrypt = require('bcryptjs');
+// authController.js
+
 const jwt = require('jsonwebtoken');
-const User = require('../models/Users.js');
-const dotenv = require('dotenv');
-dotenv.config();
-
-const router = express.Router();
-
+const bcrypt = require('bcryptjs');
+const User = require('../models/Users');
+const { storeTokenInCookie } = require('../middleware/cookie');
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -15,7 +12,6 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      // User does not exist, return a specific response
       return res.status(404).json({ message: 'User does not exist', register: true });
     }
 
@@ -26,8 +22,9 @@ exports.login = async (req, res) => {
     }
 
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.SECRET_KEY, { expiresIn: '15d' });
+    console.log('Generated JWT Token:', token);
 
-    res.cookie('token', token, { httpOnly: true });
+    storeTokenInCookie(token, res);
     res.status(200).json({
       message: 'Logged in successfully',
       token,
@@ -64,9 +61,10 @@ exports.register = async (req, res) => {
 
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.SECRET_KEY, { expiresIn: '15d' });
 
+    storeTokenInCookie(token, res);
+
     res.status(201).json({ message: 'Registered successfully', token, user: { id: user._id, email: user.email } });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
 };
-

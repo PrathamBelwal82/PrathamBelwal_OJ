@@ -5,7 +5,7 @@ exports.addSubmission = async (req, res) => {
     const filePath = req.file.path;
 
     try {
-        const submission = new Submission({ userId, problemId, filePath });
+        const submission = new Submission({ problemId, filePath });
         await submission.save();
         res.status(201).json({ message: 'Submission added successfully', submission });
     } catch (error) {
