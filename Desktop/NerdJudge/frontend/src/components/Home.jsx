@@ -11,7 +11,7 @@ const Home = () => {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Online Judge System
+            NerdJudge
           </Typography>
           {user ? (
             <div>
@@ -42,7 +42,7 @@ const Home = () => {
       </AppBar>
       <Container>
         <Typography variant="h4" component="h1" gutterBottom>
-          Welcome to the Online Judge System
+          Welcome to the NerdJudge 
         </Typography>
         <Typography variant="body1">
           This is the homepage of your online judge system. You can add more content here.
