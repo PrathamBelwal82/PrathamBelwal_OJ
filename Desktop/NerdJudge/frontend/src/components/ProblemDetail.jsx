@@ -50,6 +50,7 @@ function ProblemDetail() {
     }
 
     const formData = new FormData();
+    formData.append('userId', user.id);
     formData.append('problemId', id);
     formData.append('file', file);
 
@@ -57,7 +58,8 @@ function ProblemDetail() {
       const response = await axios.post('http://localhost:8000/submissions/submit', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-        },
+          Authorization: `Bearer ${user.token}` },
+          withCredentials: true,
       });
       console.log('File submission response:', response.data); // Debugging tip
       setMessage(response.data.message);

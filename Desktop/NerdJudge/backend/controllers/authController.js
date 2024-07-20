@@ -25,11 +25,9 @@ exports.login = async (req, res) => {
     console.log('Generated JWT Token:', token);
 
     storeTokenInCookie(token, res);
-    res.status(200).json({
-      message: 'Logged in successfully',
-      token,
-      user: { id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName }
-    });
+    res.status(200).json(
+      token
+    );
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: 'Server error' });
