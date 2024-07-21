@@ -13,6 +13,7 @@ function ProblemDetail() {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
   const [codeContent, setCodeContent] = useState('');
+  const [inputContent, setInputContent] = useState('');
   const [output, setOutput] = useState('');
   const fileInputRef = useRef();
   const { id } = useParams();
@@ -73,10 +74,11 @@ function ProblemDetail() {
     const payload = {
       language: 'cpp',
       code: codeContent,
+      input:inputContent,
     };
 
     try {
-      const { data } = await axios.post('http://localhost:8000/execute/run', payload);
+      const { data } = await axios.post(import.meta.env.VITE_BACKEND_URL, payload);
       console.log('Code execution response:', data); // Debugging tip
       setOutput(data.output);
     } catch (error) {
@@ -107,7 +109,22 @@ function ProblemDetail() {
             marginTop: '10px',
           }}
         />
+       
       </div>
+      <div>
+      <h3>Input</h3>
+        <Editor
+          value={inputContent}
+          onValueChange={(input) => setInputContent(input)}
+          highlight={(input) => highlight(input, languages.js)}
+          padding={10}
+          style={{
+            fontFamily: '"Fira code", "Fira Mono", monospace',
+            fontSize: 12,
+            border: '1px solid #ddd',
+            marginTop: '10px',
+          }}
+        /></div>
       <button onClick={handleRun}>Run Code</button>
       {output && <pre>{output}</pre>}
     </div>

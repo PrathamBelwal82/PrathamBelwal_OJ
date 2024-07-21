@@ -4,6 +4,7 @@ const { DBConnection } = require('./database/db');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 
 dotenv.config();
 
@@ -28,6 +29,10 @@ const problemRoutes = require('./routes/problems.js');
 const submissionRoutes = require('./routes/submissions.js');
 const userRoutes = require('./routes/users.js');
 const executeCodeRouter = require('./routes/executeCode');
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 
 // Use routes
 app.use('/', authRoutes);
