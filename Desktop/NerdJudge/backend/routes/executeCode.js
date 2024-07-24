@@ -13,7 +13,7 @@ router.post("/run", async (req, res) => {
   try {
       const filePath = await generateFile(language, code);
       const inputPath = await generateInputFile(input);
-      const output = await executeCpp(filePath, inputPath);
+      const output = await executeCpp(language,filePath, inputPath);
       res.json({ filePath, inputPath, output });
   } catch (error) {
       res.status(500).json({ error: error });

@@ -3,9 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const Submission = require('../models/Submissions');
 const verifyToken = require('../middleware/authMiddleware');
-const jwt = require('jsonwebtoken');
 const path = require('path');
-const fs = require('fs');
 const { generateFile } = require('./generateFile');
 const { executeCpp } = require('./executeCpp');
 const { generateInputFile } = require('./generateInputFile');
@@ -23,7 +21,7 @@ const upload = multer({ storage: storage });
 
 router.post('/submit', verifyToken, upload.single('file'), async (req, res) => {
   try {
-    const { problemId, code, input } = req.body;
+    const { problemId, code, input, language } = req.body;
     const userId = req.user.id;
     let filePath;
 
@@ -38,10 +36,10 @@ router.post('/submit', verifyToken, upload.single('file'), async (req, res) => {
     }
 
     if (code) {
-      const codeFilePath = await generateFile('cpp', code);
+      const codeFilePath = await generateFile(language, code);
       const inputFilePath = await generateInputFile(input);
-      const output = await executeCpp(codeFilePath, inputFilePath);
-      return res.json({ output }); // Return here to ensure no further responses
+      const output = await executeCpp(language, codeFilePath, inputFilePath);
+      return res.json({ output, message: 'Submission successful' }); // Return here to ensure no further responses
     }
 
     return res.status(400).json({ message: 'No code provided' }); // Return here as well
@@ -53,7 +51,6 @@ router.post('/submit', verifyToken, upload.single('file'), async (req, res) => {
     }
   }
 });
-
 
 router.get('/usersubmissions', verifyToken, async (req, res) => {
   try {

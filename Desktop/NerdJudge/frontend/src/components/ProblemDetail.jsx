@@ -5,6 +5,9 @@ import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-java';
+import 'prismjs/components/prism-c';
 import 'prismjs/themes/prism.css';
 import { useAuth } from './AuthContext';
 
@@ -15,6 +18,7 @@ function ProblemDetail() {
   const [codeContent, setCodeContent] = useState('');
   const [inputContent, setInputContent] = useState('');
   const [output, setOutput] = useState('');
+  const [language, setLanguage] = useState('cpp'); // Default language
   const fileInputRef = useRef();
   const { id } = useParams();
   const { user } = useAuth();
@@ -50,6 +54,7 @@ function ProblemDetail() {
     formData.append('problemId', id);
     formData.append('code', codeContent);
     formData.append('input', inputContent);
+    formData.append('language', language);
 
     if (file) {
       formData.append('file', file);
@@ -63,27 +68,42 @@ function ProblemDetail() {
         },
         withCredentials: true,
       });
-      console.log('Submission response:', response.data); // Debugging tip
+      console.log('Submission response:', response.data);
       setMessage(response.data.message);
     } catch (error) {
-      console.error('Error submitting:', error); // Debugging tip
+      console.error('Error submitting:', error);
       setMessage('Failed to submit');
     }
   };
 
   const handleRun = async () => {
     const payload = {
-      language: 'cpp',
+      language,
       code: codeContent,
       input: inputContent,
     };
 
     try {
-      const { data } = await axios.post(import.meta.env.VITE_BACKEND_URL, payload);
-      console.log('Code execution response:', data); // Debugging tip
+      const { data } = await axios.post('http://localhost:8000/execute/run', payload);
+      console.log('Code execution response:', data);
       setOutput(data.output);
     } catch (error) {
-      console.log('Error executing code:', error.response); // Debugging tip
+      console.log('Error executing code:', error.response);
+    }
+  };
+
+  const getLanguageHighlight = () => {
+    switch (language) {
+      case 'cpp':
+        return languages.c;
+      case 'c':
+        return languages.c;
+      case 'java':
+        return languages.java;
+      case 'python':
+        return languages.python;
+      default:
+        return languages.js;
     }
   };
 
@@ -92,6 +112,15 @@ function ProblemDetail() {
       <h2>{problem.title}</h2>
       <p>{problem.description}</p>
       <form onSubmit={handleSubmit}>
+        <label>
+          Language:
+          <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+            <option value="cpp">C++</option>
+            <option value="c">C</option>
+            <option value="java">Java</option>
+            <option value="python">Python</option>
+          </select>
+        </label>
         <input type="file" ref={fileInputRef} onChange={handleFileChange} />
         <button type="submit">Submit</button>
       </form>
@@ -101,7 +130,7 @@ function ProblemDetail() {
         <Editor
           value={codeContent}
           onValueChange={(code) => setCodeContent(code)}
-          highlight={(code) => highlight(code, languages.js)}
+          highlight={(code) => highlight(code, getLanguageHighlight())}
           padding={10}
           style={{
             fontFamily: '"Fira code", "Fira Mono", monospace',
@@ -116,7 +145,7 @@ function ProblemDetail() {
         <Editor
           value={inputContent}
           onValueChange={(input) => setInputContent(input)}
-          highlight={(input) => highlight(input, languages.js)}
+          highlight={(input) => highlight(input, getLanguageHighlight())}
           padding={10}
           style={{
             fontFamily: '"Fira code", "Fira Mono", monospace',

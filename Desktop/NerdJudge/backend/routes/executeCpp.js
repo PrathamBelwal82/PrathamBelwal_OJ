@@ -8,31 +8,35 @@ if (!fs.existsSync(outputPath)) {
     fs.mkdirSync(outputPath, { recursive: true });
 }
 
-const executeCpp = (filepath, inputPath) => {
-    const jobId = path.basename(filepath, '.cpp');
-    const outPath = path.join(outputPath, `${jobId}.exe`);
+const executeCpp = (language, filepath, inputPath) => {
+    const jobId = path.basename(filepath).split('.')[0];
+    const outPath = path.join(outputPath, `${jobId}`);
 
     return new Promise((resolve, reject) => {
-        const command = `g++ ${filepath} -o ${outPath} && ${outPath} < ${inputPath}`;
-        console.log('Executing command:', command); // Log the command
+        let command;
+        switch (language) {
+            case 'cpp':
+                command = `g++ ${filepath} -o ${outPath}.exe && ${outPath}.exe < ${inputPath}`;
+                break;
+            case 'c':
+                command = `gcc ${filepath} -o ${outPath}.exe && ${outPath}.exe < ${inputPath}`;
+                break;
+            case 'java':
+                command = `javac ${filepath} && java -cp ${path.dirname(filepath)} ${path.basename(filepath, '.java')} < ${inputPath}`;
+                break;
+            case 'python':
+                command = `python3 ${filepath} < ${inputPath}`;
+                break;
+            default:
+                return reject(new Error('Unsupported language'));
+        }
 
         exec(command, (error, stdout, stderr) => {
-            console.log('Stdout:', stdout); // Log stdout
-            console.log('Stderr:', stderr); // Log stderr
-
-            fs.unlink(outPath, (unlinkError) => {
-                if (unlinkError) {
-                    console.error('Failed to delete executable:', unlinkError);
-                }
-            });
-
             if (error) {
-                console.error('Execution error:', error.message);
-                return reject({ error: error.message, stderr });
+                reject({ error, stderr });
             }
             if (stderr) {
-                console.error('Stderr:', stderr);
-                return reject({ error: 'Execution error', stderr });
+                reject(stderr);
             }
             resolve(stdout);
         });
