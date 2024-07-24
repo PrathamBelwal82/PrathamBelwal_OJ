@@ -27,10 +27,8 @@ router.post('/submit', verifyToken, upload.single('file'), async (req, res) => {
     const userId = req.user.id;
     let filePath;
 
-    // Handle file upload
     if (req.file) {
       filePath = req.file.path;
-      // Save file submission to database
       const submission = new Submission({
         userId,
         problemId,
@@ -39,22 +37,23 @@ router.post('/submit', verifyToken, upload.single('file'), async (req, res) => {
       await submission.save();
     }
 
-    // Handle direct code submission
     if (code) {
-      const codeFilePath = await generateFile('cpp', code); // Assuming 'cpp' is the language
+      const codeFilePath = await generateFile('cpp', code);
       const inputFilePath = await generateInputFile(input);
       const output = await executeCpp(codeFilePath, inputFilePath);
-      res.json({ output });
-    } else {
-      res.status(400).json({ message: 'No code provided' });
+      return res.json({ output }); // Return here to ensure no further responses
     }
 
-    res.status(200).json({ message: 'Submission processed successfully' });
+    return res.status(400).json({ message: 'No code provided' }); // Return here as well
+
   } catch (error) {
     console.error('Error submitting:', error);
-    res.status(500).json({ message: 'Failed to submit', error: error.message });
+    if (!res.headersSent) {
+      res.status(500).json({ message: 'Failed to submit', error: error.message });
+    }
   }
 });
+
 
 router.get('/usersubmissions', verifyToken, async (req, res) => {
   try {
