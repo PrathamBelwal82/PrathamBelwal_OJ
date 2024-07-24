@@ -45,28 +45,29 @@ function ProblemDetail() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file) {
-      setMessage('Please upload a file');
-      return;
-    }
-
     const formData = new FormData();
     formData.append('userId', user.id);
     formData.append('problemId', id);
-    formData.append('file', file);
+    formData.append('code', codeContent);
+    formData.append('input', inputContent);
+
+    if (file) {
+      formData.append('file', file);
+    }
 
     try {
       const response = await axios.post('http://localhost:8000/submissions/submit', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${user.token}` },
-          withCredentials: true,
+          Authorization: `Bearer ${user.token}`
+        },
+        withCredentials: true,
       });
-      console.log('File submission response:', response.data); // Debugging tip
+      console.log('Submission response:', response.data); // Debugging tip
       setMessage(response.data.message);
     } catch (error) {
-      console.error('Error submitting file:', error); // Debugging tip
-      setMessage('Failed to submit file');
+      console.error('Error submitting:', error); // Debugging tip
+      setMessage('Failed to submit');
     }
   };
 
@@ -74,7 +75,7 @@ function ProblemDetail() {
     const payload = {
       language: 'cpp',
       code: codeContent,
-      input:inputContent,
+      input: inputContent,
     };
 
     try {
@@ -96,7 +97,7 @@ function ProblemDetail() {
       </form>
       {message && <p>{message}</p>}
       <div>
-        <h3>Code Preview</h3>
+        <h3>Code Editor</h3>
         <Editor
           value={codeContent}
           onValueChange={(code) => setCodeContent(code)}
@@ -109,10 +110,9 @@ function ProblemDetail() {
             marginTop: '10px',
           }}
         />
-       
       </div>
       <div>
-      <h3>Input</h3>
+        <h3>Input</h3>
         <Editor
           value={inputContent}
           onValueChange={(input) => setInputContent(input)}
@@ -124,7 +124,8 @@ function ProblemDetail() {
             border: '1px solid #ddd',
             marginTop: '10px',
           }}
-        /></div>
+        />
+      </div>
       <button onClick={handleRun}>Run Code</button>
       {output && <pre>{output}</pre>}
     </div>
