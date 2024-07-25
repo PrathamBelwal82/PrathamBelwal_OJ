@@ -68,8 +68,15 @@ function ProblemDetail() {
         },
         withCredentials: true,
       });
+
       console.log('Submission response:', response.data);
       setMessage(response.data.message);
+      setOutput(response.data.output);
+
+      // Display verdict based on the response
+      if (response.data.verdict) {
+        setMessage(response.data.verdict);
+      }
     } catch (error) {
       console.error('Error submitting:', error);
       setMessage('Failed to submit');
@@ -125,6 +132,12 @@ function ProblemDetail() {
         <button type="submit">Submit</button>
       </form>
       {message && <p>{message}</p>}
+      {output && (
+        <div>
+          <h3>Test Case Results</h3>
+          <pre>{message}</pre>
+        </div>
+      )}
       <div>
         <h3>Code Editor</h3>
         <Editor
@@ -156,7 +169,6 @@ function ProblemDetail() {
         />
       </div>
       <button onClick={handleRun}>Run Code</button>
-      {output && <pre>{output}</pre>}
     </div>
   );
 }

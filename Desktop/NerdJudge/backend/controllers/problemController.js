@@ -25,16 +25,24 @@ exports.getProblemById = async (req, res) => {
 };
 
 exports.createProblem = async (req, res) => {
-    try {
-        const { title, description, difficulty } = req.body;
-        if (!title || !description || !difficulty) {
-            return res.status(400).json({ error: 'All fields are required' });
-        }
-        const newProblem = new Problem({ title, description, difficulty });
-        await newProblem.save();
-        res.status(201).json({ message: 'Problem added successfully' });
-    } catch (error) {
-        console.error('Error adding problem:', error); // Log the error
-        res.status(500).json({ error: 'Failed to add problem' });
+  try {
+    const { title, description, difficulty, testCases } = req.body;
+
+    if (!title || !description || !difficulty) {
+      return res.status(400).json({ message: 'Title, description, and difficulty are required' });
     }
+
+    const newProblem = new Problem({
+      title,
+      description,
+      difficulty,
+      testCases: testCases || [], // Initialize as empty array if not provided
+    });
+
+    await newProblem.save();
+    res.status(201).json(newProblem);
+  } catch (error) {
+    console.error('Error adding problem:', error);
+    res.status(500).json({ message: 'Failed to add problem', error: error.message });
+  }
 };

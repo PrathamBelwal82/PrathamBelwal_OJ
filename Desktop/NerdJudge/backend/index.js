@@ -22,6 +22,15 @@ app.use(express.urlencoded({ extended: true }));
 
 // Database Connection
 DBConnection();
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+  process.exit(1); // Exit with failure
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  process.exit(1); // Exit with failure
+});
 
 // Routes
 const authRoutes = require('./routes/auth.js');
