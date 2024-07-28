@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, IconButton, Grid } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add.js';
+import DeleteIcon from '@mui/icons-material/Delete.js';
 
 
 const ProblemAdd = () => {
