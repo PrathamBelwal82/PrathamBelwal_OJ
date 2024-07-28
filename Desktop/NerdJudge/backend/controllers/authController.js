@@ -60,8 +60,11 @@ exports.register = async (req, res) => {
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.SECRET_KEY, { expiresIn: '15d' });
 
     storeTokenInCookie(token, res);
+    res.status(200).json(
+      token
+    );
 
-    res.status(201).json({ message: 'Registered successfully', token, user: { id: user._id, email: user.email } });
+    
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }

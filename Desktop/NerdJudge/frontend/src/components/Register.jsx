@@ -28,7 +28,7 @@ function Register() {
 
             const data = await response.json();
             if (response.ok) {
-                alert('Registration successful! Please log in.');
+                alert('Registration successful!');
                 login(data);
                 navigate('/');
             } else {

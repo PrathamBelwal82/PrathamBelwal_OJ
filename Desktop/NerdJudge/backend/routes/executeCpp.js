@@ -9,32 +9,7 @@ if (!fs.existsSync(outputPath)) {
     fs.mkdirSync(outputPath, { recursive: true });
 }
 
-const executeCpp = (language, filepath, inputPath) => {
-    const jobId = path.basename(filepath).split('.')[0];
-    const outPath = path.join(outputPath, `${jobId}`);
-    let command;
-
-    switch (language) {
-        case 'cpp':
-            command = `g++ ${filepath} -o ${outPath}.exe && ${outPath}.exe < ${inputPath}`;
-            break;
-        case 'c':
-            command = `gcc ${filepath} -o ${outPath}.exe && ${outPath}.exe < ${inputPath}`;
-            break;
-        case 'java':
-            command = `javac ${filepath} && java -cp ${path.dirname(filepath)} ${path.basename(filepath, '.java')} < ${inputPath}`;
-            break;
-        case 'python':
-            command = `python3 ${filepath} < ${inputPath}`;
-            break;
-        default:
-            return Promise.reject(new Error('Unsupported language'));
-    }
-
-    console.log(`Executing command: ${command}`);
-    console.log(`Code file path: ${filepath}`);
-    console.log(`Input file path: ${inputPath}`);
-
+const executeCommand = (command) => {
     return new Promise((resolve, reject) => {
         exec(command, { shell: '/bin/bash' }, (error, stdout, stderr) => {
             console.log(`Execution stdout: ${stdout}`);
@@ -53,6 +28,39 @@ const executeCpp = (language, filepath, inputPath) => {
     });
 };
 
+const executeCpp = async (language, filepath, inputPath) => {
+    const jobId = path.basename(filepath).split('.')[0];
+    const outPath = path.join(outputPath, `${jobId}`);
+    let command;
+
+    switch (language) {
+        case 'cpp':
+            command = `g++ ${filepath} -o ${outPath}.exe && ${outPath}.exe < ${inputPath}`;
+            break;
+        case 'c':
+            command = `gcc ${filepath} -o ${outPath}.exe && ${outPath}.exe < ${inputPath}`;
+            break;
+        case 'java':
+            command = `javac ${filepath} && java -cp ${path.dirname(filepath)} ${path.basename(filepath, '.java')} < ${inputPath}`;
+            break;
+        case 'python':
+            command = `python3 ${filepath} < ${inputPath}`;
+            break;
+        default:
+            throw new Error('Unsupported language');
+    }
+
+    console.log(`Executing command: ${command}`);
+    console.log(`Code file path: ${filepath}`);
+    console.log(`Input file path: ${inputPath}`);
+
+    try {
+        const result = await executeCommand(command);
+        return result;
+    } catch (error) {
+        throw error;
+    }
+};
 
 module.exports = {
     executeCpp,

@@ -10,6 +10,7 @@ import 'prismjs/components/prism-java';
 import 'prismjs/components/prism-c';
 import 'prismjs/themes/prism.css';
 import { useAuth } from './AuthContext';
+import './ProblemDetail.css'; // Import your custom CSS file
 
 function ProblemDetail() {
   const [problem, setProblem] = useState({});
@@ -69,7 +70,6 @@ function ProblemDetail() {
         withCredentials: true,
       });
 
-      console.log('Submission response:', response.data);
       setMessage(response.data.message);
       setOutput(response.data.output);
 
@@ -92,7 +92,6 @@ function ProblemDetail() {
 
     try {
       const { data } = await axios.post('http://localhost:8000/execute/run', payload);
-      console.log('Code execution response:', data);
       setOutput(data.output);
     } catch (error) {
       console.log('Error executing code:', error.response);
@@ -115,30 +114,42 @@ function ProblemDetail() {
   };
 
   return (
-    <div>
-      <h2>{problem.title}</h2>
-      <p>{problem.description}</p>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Language:
-          <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-            <option value="cpp">C++</option>
-            <option value="c">C</option>
-            <option value="java">Java</option>
-            <option value="python">Python</option>
-          </select>
-        </label>
-        <input type="file" ref={fileInputRef} onChange={handleFileChange} />
-        <button type="submit">Submit</button>
-      </form>
-      {message && <p>{message}</p>}
-      {output && (
-        <div>
-          <h3>Test Case Results</h3>
-          <pre>{message}</pre>
-        </div>
-      )}
-      <div>
+    <div className="problem-detail-container">
+      <h1 className="problem-title">{problem.title}</h1>
+      <div className="problem-description">
+        <p>{problem.description}</p>
+      </div>
+
+      <div className="form-container">
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="language">Language:</label>
+            <select id="language" value={language} onChange={(e) => setLanguage(e.target.value)}>
+              <option value="cpp">C++</option>
+              <option value="c">C</option>
+              <option value="java">Java</option>
+              <option value="python">Python</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="file">Upload File:</label>
+            <input type="file" ref={fileInputRef} onChange={handleFileChange} />
+          </div>
+
+          <button type="submit" className="submit-button">Submit</button>
+
+          {message && <p className="message">{message}</p>}
+          {output && (
+            <div className="output-container">
+              <h3>Test Case Results</h3>
+              <pre>{output}</pre>
+            </div>
+          )}
+        </form>
+      </div>
+
+      <div className="editor-container">
         <h3>Code Editor</h3>
         <Editor
           value={codeContent}
@@ -146,14 +157,17 @@ function ProblemDetail() {
           highlight={(code) => highlight(code, getLanguageHighlight())}
           padding={10}
           style={{
-            fontFamily: '"Fira code", "Fira Mono", monospace',
-            fontSize: 12,
+            fontFamily: '"Fira Code", "Fira Mono", monospace',
+            fontSize: 14,
             border: '1px solid #ddd',
-            marginTop: '10px',
+            borderRadius: 4,
+            backgroundColor: '#f5f5f5',
+            minHeight: '200px',
           }}
         />
       </div>
-      <div>
+
+      <div className="editor-container">
         <h3>Input</h3>
         <Editor
           value={inputContent}
@@ -161,14 +175,17 @@ function ProblemDetail() {
           highlight={(input) => highlight(input, getLanguageHighlight())}
           padding={10}
           style={{
-            fontFamily: '"Fira code", "Fira Mono", monospace',
-            fontSize: 12,
+            fontFamily: '"Fira Code", "Fira Mono", monospace',
+            fontSize: 14,
             border: '1px solid #ddd',
-            marginTop: '10px',
+            borderRadius: 4,
+            backgroundColor: '#f5f5f5',
+            minHeight: '100px',
           }}
         />
       </div>
-      <button onClick={handleRun}>Run Code</button>
+
+      <button onClick={handleRun} className="run-button">Run Code</button>
     </div>
   );
 }

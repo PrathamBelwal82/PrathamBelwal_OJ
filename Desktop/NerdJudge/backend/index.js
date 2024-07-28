@@ -38,7 +38,7 @@ const problemRoutes = require('./routes/problems.js');
 const submissionRoutes = require('./routes/submissions.js');
 const userRoutes = require('./routes/users.js');
 const executeCodeRouter = require('./routes/executeCode');
-
+const leaderboardRoutes = require('./routes/LeaderBoard');
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
@@ -49,6 +49,7 @@ app.use('/problems', problemRoutes);
 app.use('/submissions', submissionRoutes);
 app.use('/users', userRoutes);
 app.use('/execute', executeCodeRouter);
+app.use('/leaderboard',leaderboardRoutes)
 
 // Start Server
 const PORT = process.env.PORT || 8000;
