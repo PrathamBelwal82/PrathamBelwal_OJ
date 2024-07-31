@@ -27,7 +27,7 @@ function ProblemDetail() {
   useEffect(() => {
     const fetchProblemDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/problems/${id}`);
+        const response = await axios.get(`http://3.84.86.234:8000/problems/${id}`);
         setProblem(response.data);
       } catch (error) {
         console.error('Error fetching problem details:', error);
@@ -62,7 +62,7 @@ function ProblemDetail() {
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/submissions/submit', formData, {
+      const response = await axios.post('http://3.84.86.234:8000/submissions/submit', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${user.token}`
@@ -91,7 +91,7 @@ function ProblemDetail() {
     };
 
     try {
-      const { data } = await axios.post('http://localhost:8000/execute/run', payload);
+      const { data } = await axios.post('http://3.84.86.234:8000/execute/run', payload);
       setOutput(data.output);
     } catch (error) {
       console.log('Error executing code:', error.response);

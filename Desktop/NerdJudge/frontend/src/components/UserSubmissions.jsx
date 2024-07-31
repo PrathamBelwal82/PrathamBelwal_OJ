@@ -19,7 +19,7 @@ const UserSubmissions = () => {
       }
 
       try {
-        const response = await axios.get('http://localhost:8000/submissions/usersubmissions', {
+        const response = await axios.get('http://3.84.86.234:8000/submissions/usersubmissions', {
           headers: { Authorization: `Bearer ${user.token}` },
           withCredentials: true,
         });

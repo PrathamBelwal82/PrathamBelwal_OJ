@@ -9,7 +9,7 @@ const Leaderboard = () => {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/leaderboard');
+        const response = await axios.get('http://3.84.86.234:8000/leaderboard');
         setLeaderboard(response.data);
       } catch (error) {
         console.error('Error fetching leaderboard:', error.response ? error.response.data : error.message);

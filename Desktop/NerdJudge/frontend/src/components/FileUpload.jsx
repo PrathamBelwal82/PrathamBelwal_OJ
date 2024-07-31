@@ -22,7 +22,7 @@ function FileUpload({ userId, problemId }) {
         formData.append('problemId', problemId);
 
         try {
-            const response = await fetch('http://localhost:8000/submissions/upload', {
+            const response = await fetch('http://3.84.86.234:8000/submissions/upload', {
                 method: 'POST',
                 body: formData,
             });
