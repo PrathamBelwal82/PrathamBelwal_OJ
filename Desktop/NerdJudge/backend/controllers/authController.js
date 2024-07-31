@@ -38,9 +38,7 @@ exports.register = async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword } = req.body;
 
   try {
-    if (!firstName || !lastName || !email || !password || password !== confirmPassword) {
-      return res.status(400).json({ message: 'Invalid data' });
-    }
+    
 
     const existingUser = await User.findOne({ email });
 

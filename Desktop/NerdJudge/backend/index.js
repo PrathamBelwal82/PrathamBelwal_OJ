@@ -38,7 +38,7 @@ const problemRoutes = require('./routes/problems.js');
 const submissionRoutes = require('./routes/submissions.js');
 const userRoutes = require('./routes/users.js');
 const executeCodeRouter = require('./routes/executeCode');
-const leaderboardRoutes = require('./routes/LeaderBoard');
+const leaderboardRoutes = require('./routes/leaderboard');
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
