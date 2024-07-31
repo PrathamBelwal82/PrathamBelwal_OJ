@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Button, TextField, Container, Box, Typography } from '@mui/material'; // Assuming you are using Material-UI for UI components
 import { useAuth } from '../components/AuthContext';
-function Register() {
+
+const Register = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
     const { login } = useAuth();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
-            alert("Passwords don't match");
+            setError("Passwords don't match");
             return;
         }
 
@@ -23,7 +27,7 @@ function Register() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ firstName, lastName, email, password, confirmPassword }),
+                body: JSON.stringify({ firstName, lastName, email, password }),
             });
 
             const data = await response.json();
@@ -32,74 +36,72 @@ function Register() {
                 login(data);
                 navigate('/');
             } else {
-                alert(data.message || 'Registration failed. Please try again.');
+                setError(data.message || 'Registration failed. Please try again.');
             }
         } catch (error) {
             console.error('Registration Error:', error);
-            alert('Registration failed. Please try again.');
+            setError('Registration failed. Please try again.');
         }
     };
 
     return (
-        <div>
-            <h2>Register</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="firstName">First Name:</label>
-                    <input
-                        type="text"
-                        id="firstName"
+        <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+            <Box sx={{ width: '100%', maxWidth: '400px', padding: 4, border: '1px solid #ddd', borderRadius: '8px' }}>
+                <Typography variant="h5" gutterBottom>
+                    Register
+                </Typography>
+                <form onSubmit={handleSubmit}>
+                    <TextField
+                        label="First Name"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                         required
+                        fullWidth
+                        margin="normal"
                     />
-                </div>
-                <div>
-                    <label htmlFor="lastName">Last Name:</label>
-                    <input
-                        type="text"
-                        id="lastName"
+                    <TextField
+                        label="Last Name"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         required
+                        fullWidth
+                        margin="normal"
                     />
-                </div>
-                <div>
-                    <label htmlFor="email">Email:</label>
-                    <input
+                    <TextField
                         type="email"
-                        id="email"
+                        label="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        fullWidth
+                        margin="normal"
                     />
-                </div>
-                <div>
-                    <label htmlFor="password">Password:</label>
-                    <input
+                    <TextField
                         type="password"
-                        id="password"
+                        label="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        fullWidth
+                        margin="normal"
                     />
-                </div>
-                <div>
-                    <label htmlFor="confirmPassword">Confirm Password:</label>
-                    <input
+                    <TextField
                         type="password"
-                        id="confirmPassword"
+                        label="Confirm Password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
+                        fullWidth
+                        margin="normal"
                     />
-                </div>
-                <div>
-                    <button type="submit">Register</button>
-                </div>
-            </form>
-        </div>
+                    <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+                        Register
+                    </Button>
+                    {error && <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>}
+                </form>
+            </Box>
+        </Container>
     );
-}
+};
 
 export default Register;

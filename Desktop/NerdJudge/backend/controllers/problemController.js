@@ -2,13 +2,42 @@ const Problem = require('../models/Problems');
 
 exports.getProblems = async (req, res) => {
   try {
-    const problems = await Problem.find();
-    res.status(200).json(problems);
+    // Extract query parameters
+    const { page = 1, limit = 10, sortBy = 'title', sortOrder = 'asc', difficulty, tags } = req.query;
+
+    // Convert page and limit to integers
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    // Build query object
+    const query = {};
+    if (difficulty) {
+      query.difficulty = { $regex: difficulty, $options: 'i' }; // Case-insensitive match
+    }
+    if (tags) {
+      query.tags = { $in: tags.split(',') }; // Split tags into array
+    }
+
+    // Get total count for pagination
+    const totalProblems = await Problem.countDocuments(query);
+
+    // Fetch problems with pagination, sorting, and filtering
+    const problems = await Problem.find(query)
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber)
+      .sort({ [sortBy]: sortOrder === 'asc' ? 1 : -1 });
+
+    res.status(200).json({
+      problems,
+      totalPages: Math.ceil(totalProblems / limitNumber),
+      currentPage: pageNumber,
+    });
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching problems:', error);
     res.status(500).send("Internal Server Error");
   }
 };
+
 
 exports.getProblemById = async (req, res) => {
   try {

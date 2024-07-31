@@ -1,48 +1,45 @@
-import React, { useState, useEffect } from 'react';
+// src/pages/SubmissionDetail.jsx
+
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from './AuthContext';
+import { Container, Typography, Paper } from '@mui/material';
 
-function SubmissionDetail() {
-  const { submissionId } = useParams(); // Extract submissionId from URL params
-  const [submission, setSubmission] = useState(null);
-  const [error, setError] = useState('');
+const SubmissionDetail = () => {
+  const { id } = useParams(); // Get the submission ID from the URL
+  const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
 
   useEffect(() => {
-    const fetchSubmission = async () => {
+    const fetchFileContent = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/submissions/${submissionId}`, {
-          headers: {
-            'Authorization': `Bearer ${user.token}`,
-          },
-        });
-        setSubmission(response.data);
-      } catch (err) {
-        setError('Failed to fetch submission details');
+        const response = await axios.get(`http://localhost:8000/submissions/file/${id}`);
+        setContent(response.data.content);
+      } catch (error) {
+        console.error('Error fetching file content:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSubmission();
-  }, [submissionId, user.token]);
+    fetchFileContent();
+  }, [id]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
-
-  if (!submission) return <p>No submission data available</p>;
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div>
-      <h2>Submission Details</h2>
-      <p><strong>User ID:</strong> {submission.userId}</p>
-      <p><strong>Problem ID:</strong> {submission.problemId}</p>
-      <p><strong>File Path:</strong> {submission.filePath}</p>
-      <p><strong>Submitted At:</strong> {new Date(submission.submittedAt).toLocaleString()}</p>
-    </div>
+    <Container sx={{ mt: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Submission Detail
+      </Typography>
+      <Paper sx={{ padding: 2, backgroundColor: '#f5f5f5', borderRadius: '8px' }}>
+        <Typography variant="h6">File Content:</Typography>
+        <pre>{content}</pre>
+      </Paper>
+    </Container>
   );
-}
+};
 
 export default SubmissionDetail;

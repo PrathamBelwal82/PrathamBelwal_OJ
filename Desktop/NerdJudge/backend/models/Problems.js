@@ -1,3 +1,5 @@
+// models/Problem.js
+
 const mongoose = require('mongoose');
 
 const problemSchema = new mongoose.Schema({
@@ -18,9 +20,12 @@ const problemSchema = new mongoose.Schema({
             input: { type: String, required: true },
             output: { type: String, required: true }
         }
+    ],
+    tags: [
+        {
+            type: String
+        }
     ]
 });
 
-
-
-module.exports = mongoose.model('Problem', problemSchema);;
+module.exports = mongoose.model('Problem', problemSchema);

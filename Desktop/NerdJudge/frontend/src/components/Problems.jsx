@@ -1,60 +1,159 @@
+// src/components/Problems.jsx
+
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import './Problems.css'; // Import your custom CSS file
+import { Container, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, MenuItem, Button, CircularProgress } from '@mui/material'; // Material-UI components
+import { Pagination } from '@mui/material'; // For pagination
+import axios from 'axios';
 
-function Problems() {
-    const [problems, setProblems] = useState([]);
-    const [loading, setLoading] = useState(true);
+const Problems = () => {
+  const [problems, setProblems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [difficulty, setDifficulty] = useState('');
+  const [tags, setTags] = useState('');
+  const [sortBy, setSortBy] = useState('title');
+  const [sortOrder, setSortOrder] = useState('asc');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-    useEffect(() => {
-        const fetchProblems = async () => {
-            try {
-                const response = await fetch('http://localhost:8000/problems');
-                const data = await response.json();
-                setProblems(data);
-            } catch (error) {
-                console.error('Error fetching problems:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+  useEffect(() => {
+    const fetchProblems = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get('http://localhost:8000/problems', {
+          params: {
+            page,
+            limit: 10,
+            sortBy,
+            sortOrder,
+            difficulty,
+            tags,
+          },
+        });
+        setProblems(response.data.problems);
+        setTotalPages(response.data.totalPages);
+      } catch (error) {
+        console.error('Error fetching problems:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        fetchProblems();
-    }, []);
+    fetchProblems();
+  }, [page, sortBy, sortOrder, difficulty, tags]);
 
-    if (loading) {
-        return <div className="loading">Loading...</div>;
-    }
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
 
-    return (
-        <div className="problems-container">
-            <h1 className="problems-title">Problems</h1>
-            {problems.length > 0 ? (
-                <table className="problems-table">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {problems.map(problem => (
-                            <tr key={problem._id}>
-                                <td>
-                                    <Link to={`/problems/${problem._id}`} className="problem-link">
-                                        {problem.title}
-                                    </Link>
-                                </td>
-                                <td>{problem.description}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            ) : (
-                <p>No problems available.</p>
-            )}
-        </div>
-    );
-}
+  return (
+    <Container sx={{ mt: 4 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={3}>
+          <Typography variant="h6" gutterBottom>
+            Filter and Sort
+          </Typography>
+          <TextField
+            label="Difficulty"
+            value={difficulty}
+            onChange={(e) => setDifficulty(e.target.value)}
+            fullWidth
+            select
+            sx={{ mb: 2 }}
+          >
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="easy">Easy</MenuItem>
+            <MenuItem value="medium">Medium</MenuItem>
+            <MenuItem value="hard">Hard</MenuItem>
+          </TextField>
+          <TextField
+            label="Tags"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            fullWidth
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            label="Sort By"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            fullWidth
+            select
+            sx={{ mb: 2 }}
+          >
+            <MenuItem value="title">Title</MenuItem>
+            <MenuItem value="difficulty">Difficulty</MenuItem>
+          </TextField>
+          <TextField
+            label="Sort Order"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+            fullWidth
+            select
+            sx={{ mb: 2 }}
+          >
+            <MenuItem value="asc">Ascending</MenuItem>
+            <MenuItem value="desc">Descending</MenuItem>
+          </TextField>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setPage(1)}
+          >
+            Apply Filters
+          </Button>
+        </Grid>
+        <Grid item xs={12} md={9}>
+          {loading ? (
+            <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+              <CircularProgress />
+            </Container>
+          ) : (
+            <>
+              <Typography variant="h4" gutterBottom>
+                Problems
+              </Typography>
+              {problems.length > 0 ? (
+                <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Title</TableCell>
+                        <TableCell>Description</TableCell>
+                        <TableCell>Difficulty</TableCell>
+                        <TableCell>Tags</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {problems.map(problem => (
+                        <TableRow key={problem._id}>
+                          <TableCell>
+                            <a href={`/problems/${problem._id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+                              {problem.title}
+                            </a>
+                          </TableCell>
+                          <TableCell>{problem.description}</TableCell>
+                          <TableCell>{problem.difficulty}</TableCell>
+                          <TableCell>{problem.tags.join(', ')}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Typography>No problems available.</Typography>
+              )}
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={handlePageChange}
+                sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}
+              />
+            </>
+          )}
+        </Grid>
+      </Grid>
+    </Container>
+  );
+};
 
 export default Problems;

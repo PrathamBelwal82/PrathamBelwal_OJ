@@ -95,6 +95,32 @@ router.get('/usersubmissions', verifyToken, async (req, res) => {
   }
 });
 
+router.get('/file/:id', async (req, res) => {
+  try {
+    const submission = await Submission.findById(req.params.id);
+    if (!submission) {
+      console.error(`Submission with ID ${req.params.id} not found.`);
+      return res.status(404).json({ message: 'Submission not found' });
+    }
+
+    const filePath = path.resolve(__dirname, '..', submission.filePath);
+    if (!fs.existsSync(filePath)) {
+      console.error(`File not found at path: ${filePath}`);
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        console.error(`Error reading file at path ${filePath}: ${err.message}`);
+        return res.status(500).json({ message: 'Error reading file' });
+      }
+      res.json({ content: data });
+    });
+  } catch (error) {
+    console.error(`Error fetching file content: ${error.message}`);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 
 module.exports = router;

@@ -3,12 +3,27 @@ import { Container, TextField, Button, Typography, Box, IconButton, Grid } from 
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-
 const ProblemAdd = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [difficulty, setDifficulty] = useState('');
+    const [tags, setTags] = useState(['']); // Initialize with one empty tag field
     const [testCases, setTestCases] = useState([{ input: '', output: '' }]);
+
+    const handleAddTag = () => {
+        setTags([...tags, '']); // Add an empty tag field
+    };
+
+    const handleRemoveTag = (index) => {
+        setTags(tags.filter((_, i) => i !== index));
+    };
+
+    const handleTagChange = (index, value) => {
+        const updatedTags = tags.map((tag, i) =>
+            i === index ? value : tag
+        );
+        setTags(updatedTags);
+    };
 
     const handleAddTestCase = () => {
         setTestCases([...testCases, { input: '', output: '' }]);
@@ -32,7 +47,8 @@ const ProblemAdd = () => {
             title,
             description,
             difficulty,
-            testCases // Include test cases in the submission
+            tags, // Include tags in the submission
+            testCases
         };
 
         try {
@@ -48,6 +64,7 @@ const ProblemAdd = () => {
                 setTitle('');
                 setDescription('');
                 setDifficulty('');
+                setTags(['']); // Reset tags
                 setTestCases([{ input: '', output: '' }]); // Reset test cases
                 alert('Problem added successfully');
             } else {
@@ -89,6 +106,44 @@ const ProblemAdd = () => {
                     fullWidth
                     sx={{ mb: 2 }}
                 />
+                <Typography variant="h6" component="h2" gutterBottom>
+                    Tags
+                </Typography>
+                {tags.map((tag, index) => (
+                    <Box key={index} sx={{ mb: 2 }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={10}>
+                                <TextField
+                                    label={`Tag ${index + 1}`}
+                                    value={tag}
+                                    onChange={(e) => handleTagChange(index, e.target.value)}
+                                    fullWidth
+                                    required
+                                    sx={{ mb: 1 }}
+                                />
+                            </Grid>
+                            <Grid item xs={2}>
+                                <IconButton
+                                    color="error"
+                                    onClick={() => handleRemoveTag(index)}
+                                    sx={{ mt: 2 }}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                ))}
+                <Button
+                    type="button"
+                    variant="outlined"
+                    color="primary"
+                    startIcon={<AddIcon />}
+                    onClick={handleAddTag}
+                    sx={{ mb: 2 }}
+                >
+                    Add Tag
+                </Button>
                 <Typography variant="h6" component="h2" gutterBottom>
                     Test Cases
                 </Typography>

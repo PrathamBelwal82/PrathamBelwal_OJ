@@ -1,47 +1,65 @@
-// components/Leaderboard.jsx
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress } from '@mui/material';
 
-const LeaderBoard = () => {
-    const [leaderboard, setLeaderboard] = useState([]);
+const Leaderboard = () => {
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchLeaderboard = async () => {
-            try {
-                const response = await axios.get('http://localhost:8000/leaderboard');
-                setLeaderboard(response.data);
-            } catch (error) {
-                console.error('Error fetching leaderboard:', error);
-            }
-        };
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/leaderboard');
+        setLeaderboard(response.data);
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error.response ? error.response.data : error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        fetchLeaderboard();
-    }, []);
+    fetchLeaderboard();
+  }, []);
 
+  if (loading) {
     return (
-        <div>
-            <h2>Leaderboard</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Username</th>
-                        <th>Problems Solved</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {leaderboard.map((user, index) => (
-                        <tr key={user.userId}>
-                            <td>{index + 1}</td>
-                            <td>{user.username}</td>
-                            <td>{user.problemsSolved}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+      <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+        <CircularProgress />
+      </Container>
     );
+  }
+
+  return (
+    <Container sx={{ mt: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Leaderboard
+      </Typography>
+      {leaderboard.length > 0 ? (
+        <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Rank</TableCell>
+                <TableCell>Username</TableCell>
+                <TableCell>Total Submissions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {leaderboard.map((user, index) => (
+                <TableRow key={user.userId}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{user.username}</TableCell>
+                  <TableCell>{user.totalSubmissions}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <Typography>No leaderboard data available.</Typography>
+      )}
+    </Container>
+  );
 };
 
-export default LeaderBoard;
+export default Leaderboard;

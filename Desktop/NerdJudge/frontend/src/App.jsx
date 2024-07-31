@@ -21,7 +21,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/submissions/usersubmissions" element={<UserSubmissions />} />
-      <Route path="/submissions/:submissionId" element={<SubmissionDetail />} />
+      <Route path="/submissions/:id" element={<SubmissionDetail />} />
     </Routes>
   );
 }
