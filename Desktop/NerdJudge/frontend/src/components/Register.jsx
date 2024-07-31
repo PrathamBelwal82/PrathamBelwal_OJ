@@ -22,7 +22,7 @@ const Register = () => {
         }
 
         try {
-            const response = await fetch('http://3.84.86.234:8000/register', {
+            const response = await fetch('https://backend.nerdjudge.me/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

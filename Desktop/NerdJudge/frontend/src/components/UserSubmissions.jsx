@@ -19,7 +19,7 @@ const UserSubmissions = () => {
       }
 
       try {
-        const response = await axios.get('http://3.84.86.234:8000/submissions/usersubmissions', {
+        const response = await axios.get('https://backend.nerdjudge.me/submissions/usersubmissions', {
           headers: { Authorization: `Bearer ${user.token}` },
           withCredentials: true,
         });
@@ -60,7 +60,7 @@ const UserSubmissions = () => {
               {submissions.map((submission) => (
                 <TableRow key={submission._id}>
                   <TableCell>
-                    <Link component={RouterLink} to={`/submissions/${submission._id}`}>
+                    <Link component={RouterLink} to={`https://backend.nerdjudge.me/submissions/${submission._id}`}>
                       {submission._id}
                     </Link>
                   </TableCell>

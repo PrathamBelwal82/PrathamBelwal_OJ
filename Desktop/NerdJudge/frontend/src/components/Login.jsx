@@ -14,7 +14,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://3.84.86.234:8000/login', {
+      const response = await fetch('https://backend.nerdjudge.me/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -11,7 +11,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: 'https://localhost:5173',
+  origin: 'https://nerdjudge.me',
    // Allow requests from your frontend
   credentials: true // Allow cookies and authentication headers
 }));

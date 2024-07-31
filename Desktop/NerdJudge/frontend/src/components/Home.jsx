@@ -13,7 +13,7 @@ const Home = () => {
   // Function to fetch leaderboard data
   const fetchLeaderboard = async () => {
     try {
-      const response = await axios.get('http://3.84.86.234:8000/leaderboard');
+      const response = await axios.get('https://backend.nerdjudge.me/leaderboard');
       setLeaderboard(response.data);
     } catch (error) {
       console.error('Error fetching leaderboard:', error);
