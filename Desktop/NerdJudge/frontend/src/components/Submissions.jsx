@@ -12,7 +12,7 @@ const Home = () => {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const response = await axios.get('https://backend.nerdjudge.me/leaderboard');
+        const response = await axios.get('http://localhost:8000/leaderboard');
         setLeaderboard(response.data);
       } catch (error) {
         console.error('Error fetching leaderboard:', error);
@@ -28,10 +28,10 @@ const Home = () => {
   const handleSubmission = async () => {
     try {
       // Submit code here
-      const response = await axios.post('https://backend.nerdjudge.me/submit', { /* submission data */ });
+      const response = await axios.post('http://localhost:8000/submit', { /* submission data */ });
       if (response.data.verdict === 'All test cases passed') {
         // Fetch updated leaderboard after successful submission
-        const updatedResponse = await axios.get('https://backend.nerdjudge.me/leaderboard');
+        const updatedResponse = await axios.get('http://localhost:8000/leaderboard');
         setLeaderboard(updatedResponse.data);
       }
     } catch (error) {

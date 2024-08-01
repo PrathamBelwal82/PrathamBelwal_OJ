@@ -20,6 +20,7 @@ function ProblemDetail() {
   const [inputContent, setInputContent] = useState('');
   const [output, setOutput] = useState('');
   const [language, setLanguage] = useState('cpp'); // Default language
+  const [isSolved, setIsSolved] = useState(false); // State to track if the problem is solved
   const fileInputRef = useRef();
   const { id } = useParams();
   const { user } = useAuth();
@@ -27,8 +28,9 @@ function ProblemDetail() {
   useEffect(() => {
     const fetchProblemDetails = async () => {
       try {
-        const response = await axios.get(`https://backend.nerdjudge.me/problems/${id}`);
+        const response = await axios.get(`http://localhost:8000/problems/${id}`);
         setProblem(response.data);
+        setIsSolved(response.data.solved || false); // Assume problem data has a 'solved' field
       } catch (error) {
         console.error('Error fetching problem details:', error);
       }
@@ -62,7 +64,7 @@ function ProblemDetail() {
     }
 
     try {
-      const response = await axios.post('https://backend.nerdjudge.me/submissions/submit', formData, {
+      const response = await axios.post('http://localhost:8000/submissions/submit', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${user.token}`
@@ -73,9 +75,12 @@ function ProblemDetail() {
       setMessage(response.data.message);
       setOutput(response.data.output);
 
-      // Display verdict based on the response
-      if (response.data.verdict) {
-        setMessage(response.data.verdict);
+      // Update solved status based on response
+      if (response.data.verdict === 'Accepted') {
+        setIsSolved(true);
+        setMessage('Congratulations! All test cases passed.');
+      } else {
+        setIsSolved(false);
       }
     } catch (error) {
       console.error('Error submitting:', error);
@@ -91,7 +96,7 @@ function ProblemDetail() {
     };
 
     try {
-      const { data } = await axios.post('https://backend.nerdjudge.me/execute/run', payload);
+      const { data } = await axios.post('http://localhost:8000/execute/run', payload);
       setOutput(data.output);
     } catch (error) {
       console.log('Error executing code:', error.response);
@@ -119,6 +124,12 @@ function ProblemDetail() {
       <div className="problem-description">
         <p>{problem.description}</p>
       </div>
+
+      {isSolved && (
+        <div className="solved-banner">
+          <p>Problem Solved</p>
+        </div>
+      )}
 
       <div className="form-container">
         <form onSubmit={handleSubmit}>

@@ -19,7 +19,7 @@ const Problems = () => {
     const fetchProblems = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('https://backend.nerdjudge.me/problems', {
+        const response = await axios.get('http://localhost:8000/problems', {
           params: {
             page,
             limit: 10,
