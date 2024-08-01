@@ -1,23 +1,27 @@
 const Problem = require('../models/Problems');
-const verifyAdmin = require('../middleware/roleMiddleware'); // Import the admin verification middleware
 
 exports.getProblems = async (req, res) => {
   try {
+    // Extract query parameters
     const { page = 1, limit = 10, sortBy = 'title', sortOrder = 'asc', difficulty, tags } = req.query;
 
+    // Convert page and limit to integers
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
 
+    // Build query object
     const query = {};
     if (difficulty) {
-      query.difficulty = { $regex: difficulty, $options: 'i' };
+      query.difficulty = { $regex: difficulty, $options: 'i' }; // Case-insensitive match
     }
     if (tags) {
-      query.tags = { $in: tags.split(',') };
+      query.tags = { $in: tags.split(',') }; // Split tags into array
     }
 
+    // Get total count for pagination
     const totalProblems = await Problem.countDocuments(query);
 
+    // Fetch problems with pagination, sorting, and filtering
     const problems = await Problem.find(query)
       .skip((pageNumber - 1) * limitNumber)
       .limit(limitNumber)
@@ -34,6 +38,7 @@ exports.getProblems = async (req, res) => {
   }
 };
 
+
 exports.getProblemById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -48,9 +53,9 @@ exports.getProblemById = async (req, res) => {
   }
 };
 
-exports.createProblem = (verifyAdmin, async (req, res) => { // Use middleware to check admin role
+exports.createProblem = async (req, res) => {
   try {
-    const { title, description, difficulty, tags, testCases } = req.body;
+    const { title, description, difficulty, testCases } = req.body;
 
     if (!title || !description || !difficulty) {
       return res.status(400).json({ message: 'Title, description, and difficulty are required' });
@@ -60,8 +65,7 @@ exports.createProblem = (verifyAdmin, async (req, res) => { // Use middleware to
       title,
       description,
       difficulty,
-      tags: tags || [], // Initialize as empty array if not provided
-      testCases: testCases || [],
+      testCases: testCases || [], // Initialize as empty array if not provided
     });
 
     await newProblem.save();
@@ -70,4 +74,4 @@ exports.createProblem = (verifyAdmin, async (req, res) => { // Use middleware to
     console.error('Error adding problem:', error);
     res.status(500).json({ message: 'Failed to add problem', error: error.message });
   }
-});
+};

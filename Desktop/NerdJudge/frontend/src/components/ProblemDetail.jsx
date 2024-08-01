@@ -20,7 +20,6 @@ function ProblemDetail() {
   const [inputContent, setInputContent] = useState('');
   const [output, setOutput] = useState('');
   const [language, setLanguage] = useState('cpp'); // Default language
-  const [isSolved, setIsSolved] = useState(false); // State to track if the problem is solved
   const fileInputRef = useRef();
   const { id } = useParams();
   const { user } = useAuth();
@@ -30,7 +29,6 @@ function ProblemDetail() {
       try {
         const response = await axios.get(`https://backend.nerdjudge.me/problems/${id}`);
         setProblem(response.data);
-        setIsSolved(response.data.solved || false); // Assume problem data has a 'solved' field
       } catch (error) {
         console.error('Error fetching problem details:', error);
       }
@@ -75,12 +73,9 @@ function ProblemDetail() {
       setMessage(response.data.message);
       setOutput(response.data.output);
 
-      // Update solved status based on response
-      if (response.data.verdict === 'Accepted') {
-        setIsSolved(true);
-        setMessage('Congratulations! All test cases passed.');
-      } else {
-        setIsSolved(false);
+      // Display verdict based on the response
+      if (response.data.verdict) {
+        setMessage(response.data.verdict);
       }
     } catch (error) {
       console.error('Error submitting:', error);
@@ -124,12 +119,6 @@ function ProblemDetail() {
       <div className="problem-description">
         <p>{problem.description}</p>
       </div>
-
-      {isSolved && (
-        <div className="solved-banner">
-          <p>Problem Solved</p>
-        </div>
-      )}
 
       <div className="form-container">
         <form onSubmit={handleSubmit}>
