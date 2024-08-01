@@ -19,7 +19,7 @@ const UserSubmissions = () => {
       }
 
       try {
-        const response = await axios.get('http://localhost:8000/submissions/usersubmissions', {
+        const response = await axios.get('https://backend.nerdjudge.me/submissions/usersubmissions', {
           headers: { Authorization: `Bearer ${user.token}` },
           withCredentials: true,
         });

@@ -96,7 +96,7 @@ function ProblemDetail() {
     };
 
     try {
-      const { data } = await axios.post('http://localhost:8000/execute/run', payload);
+      const { data } = await axios.post('https://backend.nerdjudge.me/execute/run', payload);
       setOutput(data.output);
     } catch (error) {
       console.log('Error executing code:', error.response);
