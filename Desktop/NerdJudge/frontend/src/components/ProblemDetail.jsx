@@ -28,7 +28,7 @@ function ProblemDetail() {
   useEffect(() => {
     const fetchProblemDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/problems/${id}`);
+        const response = await axios.get(`https://backend.nerdjudge.me/problems/${id}`);
         setProblem(response.data);
         setIsSolved(response.data.solved || false); // Assume problem data has a 'solved' field
       } catch (error) {
@@ -64,7 +64,7 @@ function ProblemDetail() {
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/submissions/submit', formData, {
+      const response = await axios.post('https://backend.nerdjudge.me/submissions/submit', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${user.token}`
