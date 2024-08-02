@@ -55,7 +55,7 @@ exports.getProblemById = async (req, res) => {
 
 exports.createProblem = async (req, res) => {
   try {
-    const { title, description, difficulty, testCases } = req.body;
+    const { title, description, difficulty, testCases ,tags} = req.body;
 
     if (!title || !description || !difficulty) {
       return res.status(400).json({ message: 'Title, description, and difficulty are required' });
@@ -65,7 +65,7 @@ exports.createProblem = async (req, res) => {
       title,
       description,
       difficulty,
-      testCases: testCases || [], // Initialize as empty array if not provided
+      testCases: testCases || [],tags:tags||[] // Initialize as empty array if not provided
     });
 
     await newProblem.save();

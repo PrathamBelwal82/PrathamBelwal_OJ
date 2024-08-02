@@ -58,25 +58,22 @@ router.post('/submit', verifyToken, upload.single('file'), async (req, res) => {
     const userId = req.user.id;
     let filePath;
 
-    if (req.file) {
-      filePath = req.file.path;
-      const submission = new Submission({
-        userId,
-        problemId,
-        filePath,
-      });
-      await submission.save();
-    }
-
     if (code) {
       const problem = await Problem.findById(problemId);
       if (!problem) {
         return res.status(404).json({ message: 'Problem not found' });
       }
 
+
       const testCases = problem.testCases || [];
       const codeFilePath = await generateFile(language, code);
-      
+      filePath=codeFilePath;
+      const submission = new Submission({
+        userId,
+        problemId,
+        filePath,
+      });
+      await submission.save();
       const verdict = await Promise.all(testCases.map(async ({ input: testInput, output: expectedOutput }) => {
         const testInputFilePath = await generateInputFile(testInput);
         const testOutput = await executeCpp(language, codeFilePath, testInputFilePath);
@@ -113,16 +110,43 @@ router.post('/submit', verifyToken, upload.single('file'), async (req, res) => {
 
 
 
+// src/routes/submissions.js
 
 router.get('/usersubmissions', verifyToken, async (req, res) => {
   try {
-    const submissions = await Submission.find({ userId: req.user.id });
-    res.status(200).json(submissions);
+    // Extract page and limit from query parameters, default to page 1 and limit 10 if not provided
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+
+    // Calculate the number of documents to skip
+    const skip = (page - 1) * limit;
+
+    // Fetch submissions with pagination
+    const submissions = await Submission.find({ userId: req.user.id })
+    .sort({ submittedAt: -1 }) 
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    // Get the total count of documents for pagination info
+    const totalCount = await Submission.countDocuments({ userId: req.user.id });
+    const totalPages = Math.ceil(totalCount / limit);
+
+    // Send the response with pagination info
+    res.status(200).json({
+      submissions,
+      pagination: {
+        totalPages,
+        currentPage: page,
+        totalCount,
+      },
+    });
   } catch (error) {
     console.error('Server error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
+
 
 router.get('/file/:id', async (req, res) => {
   try {
