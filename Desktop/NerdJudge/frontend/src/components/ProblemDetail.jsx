@@ -28,7 +28,7 @@ function ProblemDetail() {
   useEffect(() => {
     const fetchProblemDetails = async () => {
       try {
-        const response = await axios.get(`https://backend.nerdjudge.me/${id}`);
+        const response = await axios.get(`https://backend.nerdjudge.me/problems/${id}`);
         setProblem(response.data);
       } catch (error) {
         console.error('Error fetching problem details:', error);
