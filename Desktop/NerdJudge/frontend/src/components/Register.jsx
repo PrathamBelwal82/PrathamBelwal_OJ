@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField, Container, Box, Typography } from '@mui/material'; // Assuming you are using Material-UI for UI components
 import { useAuth } from '../components/AuthContext';
-
+import axios from 'axios';
 const Register = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -22,25 +22,27 @@ const Register = () => {
         }
 
         try {
-            const response = await fetch('https://backend.nerdjudge.me/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ firstName, lastName, email, password }),
-            });
-
-            const data = await response.json();
-            if (response.ok) {
+            const response = await axios.post('http://localhost:8000/register', {
+                firstName, lastName, email, password, 
+              });
+          
+              const { token, userId } = response.data;
+              console.log('Email:', token);
+              console.log('Password:', userId);
+              
+              if (token && userId) {
                 alert('Registration successful!');
-                login(data);
+                login(token, userId);
                 navigate('/');
-            } else {
+              } 
+
+             else {
                 setError(data.message || 'Registration failed. Please try again.');
             }
         } catch (error) {
             console.error('Registration Error:', error);
-            setError('Registration failed. Please try again.');
+            setError('User Exists');
+            navigate('/login')
         }
     };
 

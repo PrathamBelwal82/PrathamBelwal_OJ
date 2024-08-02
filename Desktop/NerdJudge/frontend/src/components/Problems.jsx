@@ -19,6 +19,7 @@ import {
 } from "@mui/material"; // Material-UI components
 import { Pagination } from "@mui/material"; // For pagination
 import axios from "axios";
+import { useAuth } from './AuthContext';
 
 const Problems = () => {
   const [problems, setProblems] = useState([]);
@@ -29,13 +30,16 @@ const Problems = () => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
+    
     const fetchProblems = async () => {
       setLoading(true);
+      setUserId(localStorage.getItem('userId'));
       try {
         const response = await axios.get(
-          "https://backend.nerdjudge.me/problems",
+          "http://localhost:8000/problems",
           {
             params: {
               page,
@@ -49,6 +53,7 @@ const Problems = () => {
         );
         setProblems(response.data.problems);
         setTotalPages(response.data.totalPages);
+        console.log(userId);
       } catch (error) {
         console.error("Error fetching problems:", error);
       } finally {
@@ -153,11 +158,12 @@ const Problems = () => {
                         <TableRow
                           key={problem._id}
                           sx={{
-                            ...(problem.issolved===1 && {
-                              backgroundColor: "#e8f5e9", // Green background for solved problems
-                            }),
-                            ...(problem.issolved===2 && {
+                            
+                            ...(problem.incorrectlySolved.includes(userId) && {
                               backgroundColor: "#ffcccb",
+                            }),
+                            ...(problem.correctlySolved.includes(userId) && {
+                              backgroundColor: "#e8f5e9", // Green background for solved problems
                             }),
 
                             

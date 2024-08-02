@@ -5,13 +5,16 @@ const verifyToken = (req, res, next) => {
   console.log('Authorization Header:', authHeader); // Debugging tip
 
   if (!authHeader) {
-    return res.status(401).json({ verdict:'User not logged in', message: 'Authorization header is missing' });
+     // Debugging tip
+     return res.status(401).json({ verdict:'User not logged in', message: 'Authorization header is missing' });
   }
+
 
   const token = authHeader.split(' ')[1];
   console.log('Extracted token:', token); // Debugging tip
 
   if (!token) {
+    console.log('Unautorized User:');
     return res.status(401).json({ message: 'Unauthorized' });
   }
 

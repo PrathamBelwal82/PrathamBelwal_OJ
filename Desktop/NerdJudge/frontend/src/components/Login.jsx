@@ -1,45 +1,39 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button, TextField, Container, Box, Typography } from '@mui/material'; // Assuming you are using Material-UI for UI components
 import { useAuth } from '../components/AuthContext';
-
+import axios from 'axios';
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const response = await fetch('https://backend.nerdjudge.me/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+      console.log('Email:', email);
+  console.log('Password:', password);
+      const response = await axios.post('http://localhost:8000/login', {
+        email,
+        password
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Login successful, redirect to home or dashboard
-        login(data);
+  
+      const { token, userId } = response.data; // Destructure the response data
+      console.log('Email:', token);
+      console.log('Password:', userId);
+      // Check if token and userId are present in the response
+      if (token && userId) {
+        login(token, userId);
         navigate('/');
-      } else if (data.register) {
-        // User does not exist, redirect to register page
-        navigate('/register');
-      } else {
-        // Invalid credentials or other error
-        setError(data.message);
-      }
+      } 
     } catch (error) {
       console.error('Login error:', error);
       setError('Server error');
     }
   };
+  
 
   return (
     <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>

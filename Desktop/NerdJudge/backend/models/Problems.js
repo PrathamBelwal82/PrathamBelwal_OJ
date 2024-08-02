@@ -26,11 +26,18 @@ const problemSchema = new mongoose.Schema({
             type: String
         }
     ],
-    issolved:
+    correctlySolved: [
         {
-            type: Number,default:0
+            type: String,
+            ref: 'User'
         }
-    
+    ],
+    incorrectlySolved: [
+        {
+            type: String,
+            ref: 'User'
+        }
+    ]
 });
 
 module.exports = mongoose.model('Problem', problemSchema);

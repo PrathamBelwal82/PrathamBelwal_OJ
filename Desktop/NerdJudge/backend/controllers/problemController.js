@@ -70,7 +70,8 @@ exports.createProblem = async (req, res) => {
       description,
       difficulty,
       testCases: testCases || [],tags:tags||[], // Initialize as empty array if not provided
-      issolved:false
+    correctlySolvedBy:[],
+    incorrectlySolvedBy:[]
     });
 
     await newProblem.save();

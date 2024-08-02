@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Container, TextField, Button, Typography, Box, IconButton, Grid } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import { useAuth } from './AuthContext';
+import { Link } from 'react-router-dom';
 const ProblemAdd = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [difficulty, setDifficulty] = useState('');
     const [tags, setTags] = useState(['']); // Initialize with one empty tag field
     const [testCases, setTestCases] = useState([{ input: '', output: '' }]);
+    const { user } = useAuth();
+    const [message, setMessage] = useState('');
+    const [str,setStr]=useState('');
+    useEffect(() => {
+        if (!user) {
+            setStr('NoUser');
+            setMessage('Please Log In To Add Problems');
+        }
+    }, [user]);
 
     const handleAddTag = () => {
         setTags([...tags, '']); // Add an empty tag field
@@ -42,7 +52,7 @@ const ProblemAdd = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+        
         const newProblem = {
             title,
             description,
@@ -52,7 +62,7 @@ const ProblemAdd = () => {
         };
 
         try {
-            const response = await fetch('https://backend.nerdjudge.me/problems/add', {
+            const response = await fetch('http://localhost:8000/problems/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -76,7 +86,33 @@ const ProblemAdd = () => {
     };
 
     return (
+        str === 'NoUser'?<Container sx={{ textAlign: 'center', mt: 4 }}>
+        <Typography variant="h6" component="p" gutterBottom>
+            {message}
+        </Typography>
+        <Box sx={{ mb: 2 }}>
+            <Button
+                color="primary"
+                variant="contained"
+                component={Link}
+                to="/login"
+                sx={{ mx: 1 }}
+            >
+                Login
+            </Button>
+            <Button
+                color="secondary"
+                variant="contained"
+                component={Link}
+                to="/register"
+                sx={{ mx: 1 }}
+            >
+                Register
+            </Button>
+        </Box>
+    </Container>:
         <Container>
+           
             <Typography variant="h4" component="h1" gutterBottom>
                 Add a New Problem
             </Typography>

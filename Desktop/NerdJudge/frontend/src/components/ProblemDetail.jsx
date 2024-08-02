@@ -11,7 +11,7 @@ import 'prismjs/components/prism-c';
 import 'prismjs/themes/prism.css';
 import { useAuth } from './AuthContext';
 import './ProblemDetail.css'; // Import your custom CSS file
-
+import { useNavigate } from 'react-router-dom';
 function ProblemDetail() {
   const [problem, setProblem] = useState({});
   const [file, setFile] = useState(null);
@@ -23,11 +23,12 @@ function ProblemDetail() {
   const fileInputRef = useRef();
   const { id } = useParams();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProblemDetails = async () => {
       try {
-        const response = await axios.get(`https://backend.nerdjudge.me/problems/${id}`);
+        const response = await axios.get(`http://localhost:8000/problems/${id}`);
         setProblem(response.data);
       } catch (error) {
         console.error('Error fetching problem details:', error);
@@ -51,7 +52,11 @@ function ProblemDetail() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('userId', user.id);
+    if(!user){
+      setMessage('Log In');
+      return;
+    }
+    formData.append('userId', user._id);
     formData.append('problemId', id);
     formData.append('code', codeContent);
     formData.append('input', inputContent);
@@ -62,7 +67,7 @@ function ProblemDetail() {
     }
 
     try {
-      const response = await axios.post('https://backend.nerdjudge.me/submissions/submit', formData, {
+      const response = await axios.post('http://localhost:8000/submissions/submit', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${user.token}`

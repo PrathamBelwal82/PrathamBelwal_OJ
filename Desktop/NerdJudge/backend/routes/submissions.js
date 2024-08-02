@@ -85,14 +85,18 @@ router.post('/submit', verifyToken, upload.single('file'), async (req, res) => {
       if (allPassed) {
         // Update the leaderboard
         await updateLeaderboard(userId);
-        problem.issolved = 1;
+        if (!problem.correctlySolved.includes(userId)) {
+          problem.correctlySolved.push(userId);
+        }
         await problem.save();
         return res.json({
           verdict: 'All test cases passed',
           message: 'Submission successful',
         });
       } else {
-        problem.issolved = 2-problem.issolved;
+        if (!problem.incorrectlySolved.includes(userId) && !problem.correctlySolved.includes(userId)) {
+          problem.incorrectlySolved.push(userId);
+        }
         await problem.save();
         return res.json({
           verdict: 'Some test cases failed',

@@ -13,7 +13,7 @@ const AuthProvider = ({ children }) => {
     
     if (token && userId) {
       try {
-        setUser({ loggedIn: true, token: JSON.parse(token), userId });
+        setUser({ loggedIn: true, token, userId });
       } catch (error) {
         console.error('Error parsing token from localStorage:', error);
       }
@@ -25,9 +25,14 @@ const AuthProvider = ({ children }) => {
       console.error('Expected token to be a string but received:', token);
       return;
     }
+
+    if (typeof userId !== 'string') {
+      console.error('Expected userId to be a string but received:', userId);
+      return;
+    }
     
-    localStorage.setItem('token', JSON.stringify(token));
-    localStorage.setItem('userId', JSON.stringify(userId));
+    localStorage.setItem('token', token);
+    localStorage.setItem('userId', userId);
     setUser({ loggedIn: true, token, userId });
   };
 
