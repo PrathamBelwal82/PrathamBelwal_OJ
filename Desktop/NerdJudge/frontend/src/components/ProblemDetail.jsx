@@ -137,7 +137,47 @@ function ProblemDetail() {
             <input type="file" ref={fileInputRef} onChange={handleFileChange} />
           </div>
 
-          <button type="submit" className="submit-button">Submit</button>
+          <div className="editor-container">
+            <h3>Code Editor</h3>
+            <Editor
+              value={codeContent}
+              onValueChange={(code) => setCodeContent(code)}
+              highlight={(code) => highlight(code, getLanguageHighlight())}
+              padding={10}
+              style={{
+                fontFamily: '"Fira Code", "Fira Mono", monospace',
+                fontSize: 14,
+                border: '1px solid #ddd',
+                borderRadius: 4,
+                backgroundColor: '#f5f5f5',
+                minHeight: '200px',
+              }}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="input">Input:</label>
+            <Editor
+              value={inputContent}
+              onValueChange={(input) => setInputContent(input)}
+              highlight={(input) => highlight(input, getLanguageHighlight())}
+              padding={10}
+              style={{
+                fontFamily: '"Fira Code", "Fira Mono", monospace',
+                fontSize: 14,
+                border: '1px solid #ddd',
+                borderRadius: 4,
+                backgroundColor: '#f5f5f5',
+                minHeight: '100px',
+              }}
+            />
+          </div>
+
+          {/* Place buttons below the input box */}
+          <div className="button-group">
+            <button type="button" onClick={handleRun} className="run-button">Run Code</button>
+            <button type="submit" className="submit-button">Submit</button>
+          </div>
 
           {message && <p className="message">{message}</p>}
           {output && (
@@ -148,44 +188,6 @@ function ProblemDetail() {
           )}
         </form>
       </div>
-
-      <div className="editor-container">
-        <h3>Code Editor</h3>
-        <Editor
-          value={codeContent}
-          onValueChange={(code) => setCodeContent(code)}
-          highlight={(code) => highlight(code, getLanguageHighlight())}
-          padding={10}
-          style={{
-            fontFamily: '"Fira Code", "Fira Mono", monospace',
-            fontSize: 14,
-            border: '1px solid #ddd',
-            borderRadius: 4,
-            backgroundColor: '#f5f5f5',
-            minHeight: '200px',
-          }}
-        />
-      </div>
-
-      <div className="editor-container">
-        <h3>Input</h3>
-        <Editor
-          value={inputContent}
-          onValueChange={(input) => setInputContent(input)}
-          highlight={(input) => highlight(input, getLanguageHighlight())}
-          padding={10}
-          style={{
-            fontFamily: '"Fira Code", "Fira Mono", monospace',
-            fontSize: 14,
-            border: '1px solid #ddd',
-            borderRadius: 4,
-            backgroundColor: '#f5f5f5',
-            minHeight: '100px',
-          }}
-        />
-      </div>
-
-      <button onClick={handleRun} className="run-button">Run Code</button>
     </div>
   );
 }

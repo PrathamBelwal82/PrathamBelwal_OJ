@@ -1,65 +1,68 @@
+/* ProblemDetail.css */
+
 .problem-detail-container {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-  }
-  
-  .problem-title {
-    font-size: 2em;
-    margin-bottom: 10px;
-  }
-  
-  .problem-description {
-    margin-bottom: 20px;
-  }
-  
-  .form-container {
-    margin-bottom: 20px;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .submit-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .submit-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .message {
-    color: #dc3545;
-  }
-  
-  .output-container {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #f8f9fa;
-  }
-  
-  .editor-container {
-    margin-bottom: 20px;
-  }
-  
-  .run-button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .run-button:hover {
-    background-color: #218838;
-  }
-  
+  padding: 20px;
+}
+
+.problem-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.problem-description {
+  margin-bottom: 20px;
+}
+
+.form-container {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.editor-container {
+  margin-bottom: 20px;
+}
+
+.editor-container h3 {
+  margin-bottom: 10px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+  margin-top: 20px; /* Space above the button group */
+}
+
+.submit-button,
+.run-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-button {
+  background-color: #4CAF50; /* Green background for submit */
+  color: white;
+}
+
+.run-button {
+  background-color: #2196F3; /* Blue background for run code */
+  color: white;
+}
+
+.submit-button:hover,
+.run-button:hover {
+  opacity: 0.8; /* Slightly reduce opacity on hover */
+}
+
+.output-container {
+  margin-top: 20px;
+}
+
+.message {
+  color: #FF5722; /* Red for error messages */
+}

@@ -29,7 +29,7 @@ const executeCommand = (command) => {
 };
 
 const executeCpp = async (language, filepath, inputPath) => {
-    const jobId = path.basename(filepath).split('.')[0];
+    const jobId = path.basename(inputPath).split('.')[0];
     const outPath = path.join(outputPath, `${jobId}`);
     let command;
 

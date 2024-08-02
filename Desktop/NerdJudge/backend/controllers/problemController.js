@@ -1,27 +1,29 @@
 const Problem = require('../models/Problems');
 
+// controllers/problemController.js
+
+// controllers/problemController.js
+
 exports.getProblems = async (req, res) => {
   try {
-    // Extract query parameters
     const { page = 1, limit = 10, sortBy = 'title', sortOrder = 'asc', difficulty, tags } = req.query;
 
-    // Convert page and limit to integers
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
 
-    // Build query object
     const query = {};
     if (difficulty) {
-      query.difficulty = { $regex: difficulty, $options: 'i' }; // Case-insensitive match
+      query.difficulty = { $regex: difficulty, $options: 'i' };
     }
     if (tags) {
-      query.tags = { $in: tags.split(',') }; // Split tags into array
+      // Convert tags to an array of regex patterns for prefix matching
+      const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+      if (tagsArray.length > 0) {
+        query.tags = { $elemMatch: { $regex: `^${tagsArray.join('|')}`, $options: 'i' } }; // Match tags starting with any of the prefixes
+      }
     }
 
-    // Get total count for pagination
     const totalProblems = await Problem.countDocuments(query);
-
-    // Fetch problems with pagination, sorting, and filtering
     const problems = await Problem.find(query)
       .skip((pageNumber - 1) * limitNumber)
       .limit(limitNumber)
@@ -37,6 +39,8 @@ exports.getProblems = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
+
 
 
 exports.getProblemById = async (req, res) => {
@@ -65,7 +69,8 @@ exports.createProblem = async (req, res) => {
       title,
       description,
       difficulty,
-      testCases: testCases || [],tags:tags||[] // Initialize as empty array if not provided
+      testCases: testCases || [],tags:tags||[], // Initialize as empty array if not provided
+      issolved:false
     });
 
     await newProblem.save();

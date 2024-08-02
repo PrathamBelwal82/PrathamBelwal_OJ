@@ -27,7 +27,7 @@ const AuthProvider = ({ children }) => {
     }
     
     localStorage.setItem('token', JSON.stringify(token));
-    localStorage.setItem('userId', userId);
+    localStorage.setItem('userId', JSON.stringify(userId));
     setUser({ loggedIn: true, token, userId });
   };
 

@@ -25,7 +25,12 @@ const problemSchema = new mongoose.Schema({
         {
             type: String
         }
-    ]
+    ],
+    issolved:
+        {
+            type: Number,default:0
+        }
+    
 });
 
 module.exports = mongoose.model('Problem', problemSchema);

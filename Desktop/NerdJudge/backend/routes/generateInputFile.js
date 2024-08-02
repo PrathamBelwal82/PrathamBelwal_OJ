@@ -1,9 +1,10 @@
 const fs = require('fs');
 const path = require('path');
-
+const { v4: uuid } = require('uuid');
 
 const generateInputFile = async (input) => {
-    const inputFileName = `input-${Date.now()}.txt`;  // Unique name to avoid collisions
+    const jobID = uuid();
+    const inputFileName = `input-${jobID}.txt`;  // Unique name to avoid collisions
     const inputFilePath = path.join(__dirname, 'inputs', inputFileName);
 
     try {

@@ -1,17 +1,32 @@
 // src/components/Problems.jsx
 
-import React, { useEffect, useState } from 'react';
-import { Container, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, MenuItem, Button, CircularProgress } from '@mui/material'; // Material-UI components
-import { Pagination } from '@mui/material'; // For pagination
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import {
+  Container,
+  Grid,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TextField,
+  MenuItem,
+  Button,
+  CircularProgress,
+} from "@mui/material"; // Material-UI components
+import { Pagination } from "@mui/material"; // For pagination
+import axios from "axios";
 
 const Problems = () => {
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [difficulty, setDifficulty] = useState('');
-  const [tags, setTags] = useState('');
-  const [sortBy, setSortBy] = useState('title');
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [difficulty, setDifficulty] = useState("");
+  const [tags, setTags] = useState("");
+  const [sortBy, setSortBy] = useState("title");
+  const [sortOrder, setSortOrder] = useState("asc");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -19,20 +34,23 @@ const Problems = () => {
     const fetchProblems = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('https://backend.nerdjudge.me/problems', {
-          params: {
-            page,
-            limit: 10,
-            sortBy,
-            sortOrder,
-            difficulty,
-            tags,
-          },
-        });
+        const response = await axios.get(
+          "https://backend.nerdjudge.me/problems",
+          {
+            params: {
+              page,
+              limit: 10,
+              sortBy,
+              sortOrder,
+              difficulty,
+              tags: tags.trim(), // Ensure no extra spaces
+            },
+          }
+        );
         setProblems(response.data.problems);
         setTotalPages(response.data.totalPages);
       } catch (error) {
-        console.error('Error fetching problems:', error);
+        console.error("Error fetching problems:", error);
       } finally {
         setLoading(false);
       }
@@ -66,7 +84,7 @@ const Problems = () => {
             <MenuItem value="hard">Hard</MenuItem>
           </TextField>
           <TextField
-            label="Tags"
+            label="Tags (comma-separated)"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
             fullWidth
@@ -104,7 +122,14 @@ const Problems = () => {
         </Grid>
         <Grid item xs={12} md={9}>
           {loading ? (
-            <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+            <Container
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "80vh",
+              }}
+            >
               <CircularProgress />
             </Container>
           ) : (
@@ -113,27 +138,45 @@ const Problems = () => {
                 Problems
               </Typography>
               {problems.length > 0 ? (
-                <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
+                <TableContainer component={Paper} sx={{ borderRadius: "8px" }}>
                   <Table>
                     <TableHead>
                       <TableRow>
                         <TableCell>Title</TableCell>
-                        <TableCell>Description</TableCell>
                         <TableCell>Difficulty</TableCell>
                         <TableCell>Tags</TableCell>
+                        
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {problems.map(problem => (
-                        <TableRow key={problem._id}>
+                      {problems.map((problem) => (
+                        <TableRow
+                          key={problem._id}
+                          sx={{
+                            ...(problem.issolved===1 && {
+                              backgroundColor: "#e8f5e9", // Green background for solved problems
+                            }),
+                            ...(problem.issolved===2 && {
+                              backgroundColor: "#ffcccb",
+                            }),
+
+                            
+                          }} // Apply background color based on problem's solved status
+                        >
                           <TableCell>
-                            <a href={`/problems/${problem._id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+                            <a
+                              href={`/problems/${problem._id}`}
+                              style={{
+                                textDecoration: "none",
+                                color: "#1976d2",
+                              }}
+                            >
                               {problem.title}
                             </a>
                           </TableCell>
-                          <TableCell>{problem.description}</TableCell>
                           <TableCell>{problem.difficulty}</TableCell>
-                          <TableCell>{problem.tags.join(', ')}</TableCell>
+                          <TableCell>{problem.tags.join(", ")}</TableCell>
+                         
                         </TableRow>
                       ))}
                     </TableBody>
@@ -146,7 +189,7 @@ const Problems = () => {
                 count={totalPages}
                 page={page}
                 onChange={handlePageChange}
-                sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}
+                sx={{ mt: 4, display: "flex", justifyContent: "center" }}
               />
             </>
           )}

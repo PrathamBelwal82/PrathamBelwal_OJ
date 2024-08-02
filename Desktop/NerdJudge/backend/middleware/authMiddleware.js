@@ -5,7 +5,7 @@ const verifyToken = (req, res, next) => {
   console.log('Authorization Header:', authHeader); // Debugging tip
 
   if (!authHeader) {
-    return res.status(401).json({ message: 'Authorization header is missing' });
+    return res.status(401).json({ verdict:'User not logged in', message: 'Authorization header is missing' });
   }
 
   const token = authHeader.split(' ')[1];

@@ -85,12 +85,15 @@ router.post('/submit', verifyToken, upload.single('file'), async (req, res) => {
       if (allPassed) {
         // Update the leaderboard
         await updateLeaderboard(userId);
-
+        problem.issolved = 1;
+        await problem.save();
         return res.json({
           verdict: 'All test cases passed',
           message: 'Submission successful',
         });
       } else {
+        problem.issolved = 2-problem.issolved;
+        await problem.save();
         return res.json({
           verdict: 'Some test cases failed',
           message: 'Submission successful but not added to leaderboard',
