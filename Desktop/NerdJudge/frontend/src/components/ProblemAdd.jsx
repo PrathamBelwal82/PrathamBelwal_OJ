@@ -62,7 +62,7 @@ const ProblemAdd = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:8000/problems/add', {
+            const response = await fetch('https://backend.nerdjudge.me/problems/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

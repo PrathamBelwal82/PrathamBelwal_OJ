@@ -15,7 +15,7 @@ const Login = () => {
     try {
       console.log('Email:', email);
   console.log('Password:', password);
-      const response = await axios.post('http://localhost:8000/login', {
+      const response = await axios.post('https://backend.nerdjudge.me/login', {
         email,
         password
       });

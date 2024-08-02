@@ -39,7 +39,7 @@ const Problems = () => {
       setUserId(localStorage.getItem('userId'));
       try {
         const response = await axios.get(
-          "http://localhost:8000/problems",
+          "https://backend.nerdjudge.me/problems",
           {
             params: {
               page,

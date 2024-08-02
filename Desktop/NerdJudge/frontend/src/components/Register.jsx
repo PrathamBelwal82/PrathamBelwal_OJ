@@ -22,7 +22,7 @@ const Register = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:8000/register', {
+            const response = await axios.post('https://backend.nerdjudge.me/register', {
                 firstName, lastName, email, password, 
               });
           
