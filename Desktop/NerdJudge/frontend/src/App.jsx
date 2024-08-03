@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './components/Home';
 import Problems from './components/Problems';
@@ -11,6 +11,9 @@ import ProblemAdd from './components/ProblemAdd';
 import UserSubmissions from './components/UserSubmissions';
 import SubmissionDetail from './components/SubmissionDetail';
 function App() {
+  useEffect(() => {
+    document.title = 'NerdJudge';
+}, []);
   return (
     <Routes>
       <Route path="/" element={<Home />} />
