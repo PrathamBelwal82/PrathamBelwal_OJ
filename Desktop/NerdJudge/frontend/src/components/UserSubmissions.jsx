@@ -33,8 +33,11 @@ const UserSubmissions = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate('/');
-      return;
+      const timer = setTimeout(() => {
+        navigate('/');
+      }, 500);
+
+      return () => clearTimeout(timer); // Clean up timeout if the component unmounts
     }
     fetchSubmissions(pagination.currentPage);
   }, [user, pagination.currentPage, navigate]);
