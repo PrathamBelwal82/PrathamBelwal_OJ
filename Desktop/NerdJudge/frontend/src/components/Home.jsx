@@ -85,7 +85,7 @@ const Home = () => {
             Welcome to the NerdJudge
           </Typography>
           <Typography variant="body1" gutterBottom>
-            This is the homepage of your online judge system. Here is the leaderboard:
+            Chcek out the top 10 users. Here is the leaderboard:
           </Typography>
           {/* Leaderboard Section */}
           <Box sx={{ mt: 4, mb: 4 }}>
