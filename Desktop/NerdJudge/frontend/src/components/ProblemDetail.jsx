@@ -53,7 +53,8 @@ function ProblemDetail() {
     e.preventDefault();
     const formData = new FormData();
     if(!user){
-      setMessage('Log In');
+      alert('Log In is required to submit a problem');
+      navigate('/');
       return;
     }
     formData.append('userId', user._id);

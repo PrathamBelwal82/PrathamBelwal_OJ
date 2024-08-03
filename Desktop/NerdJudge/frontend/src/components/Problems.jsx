@@ -1,6 +1,8 @@
 // src/components/Problems.jsx
 
 import React, { useEffect, useState } from "react";
+import Cookies from 'js-cookie';
+
 import {
   Container,
   Grid,
@@ -36,7 +38,7 @@ const Problems = () => {
     
     const fetchProblems = async () => {
       setLoading(true);
-      setUserId(localStorage.getItem('userId'));
+      setUserId(Cookies.get('userId'));
       try {
         const response = await axios.get(
           "https://backend.nerdjudge.me/problems",

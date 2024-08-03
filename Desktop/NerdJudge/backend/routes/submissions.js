@@ -113,7 +113,7 @@ router.post('/submit', verifyToken, upload.single('file'), async (req, res) => {
   } catch (error) {
     console.error('Error submitting:', error);
     if (!res.headersSent) {
-      res.status(500).json({ message: 'Failed to submit', error: error.message });
+      res.status(500).json({ message: 'Compiler Error', error: error.message });
     }
   }
 });
