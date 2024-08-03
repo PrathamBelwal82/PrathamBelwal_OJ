@@ -72,6 +72,7 @@ router.post('/submit', verifyToken, upload.single('file'), async (req, res) => {
         userId,
         problemId,
         filePath,
+        verdict:false,
       });
       await submission.save();
       const verdict = await Promise.all(testCases.map(async ({ input: testInput, output: expectedOutput }) => {
@@ -83,6 +84,8 @@ router.post('/submit', verifyToken, upload.single('file'), async (req, res) => {
       const allPassed = verdict.every(v => v);
 
       if (allPassed) {
+        submission.verdict=true;
+        await submission.save();
         // Update the leaderboard
         await updateLeaderboard(userId);
         if (!problem.correctlySolved.includes(userId)) {
@@ -99,7 +102,7 @@ router.post('/submit', verifyToken, upload.single('file'), async (req, res) => {
         }
         await problem.save();
         return res.json({
-          verdict: 'Some test cases failed',
+          verdict: 'Not All Test Cases Passed',
           message: 'Submission successful but not added to leaderboard',
         });
       }

@@ -6,11 +6,9 @@ const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 
+const app=express();
 dotenv.config();
 
-const app = express();
-
-// Array of allowed origins
 const allowedOrigins = [
   'https://www.nerdjudge.me',
   'http://localhost:5173' // Add more origins as needed
@@ -28,6 +26,7 @@ app.use(cors({
   },
   credentials: true // Allow cookies and authentication headers
 }));
+
 
 app.use(express.json());
 app.use(cookieParser());
@@ -53,6 +52,7 @@ const submissionRoutes = require('./routes/submissions.js');
 const userRoutes = require('./routes/users.js');
 const executeCodeRouter = require('./routes/executeCode');
 const leaderboardRoutes = require('./routes/leaderboard');
+
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });

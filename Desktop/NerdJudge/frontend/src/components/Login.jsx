@@ -1,39 +1,66 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button, TextField, Container, Box, Typography } from '@mui/material'; // Assuming you are using Material-UI for UI components
 import { useAuth } from '../components/AuthContext';
 import axios from 'axios';
+
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       console.log('Email:', email);
-  console.log('Password:', password);
+      console.log('Password:', password);
       const response = await axios.post('https://backend.nerdjudge.me/login', {
         email,
         password
-      });
-  
-      const { token, userId } = response.data; // Destructure the response data
-      console.log('Email:', token);
-      console.log('Password:', userId);
-      // Check if token and userId are present in the response
+      }, { withCredentials: true });
+
+      const { token, userId, message, register } = response.data || {};
+
+      console.log('Token:', token);
+      console.log('UserId:', userId);
+      console.log('Message:', message);
+      console.log('Register:', register);
+
       if (token && userId) {
+        // Handle successful login
         login(token, userId);
         navigate('/');
-      } 
+      } else if (message) {
+        // Handle different types of messages from backend
+        if (register) {
+          // Redirect to registration page if the backend suggests registration
+          navigate('/register');
+        } else {
+          // Display error message from backend
+          setError(message);
+        }
+      } else {
+        // Handle unexpected responses
+        setError('Unexpected response from server');
+      }
     } catch (error) {
-      console.error('Login error:', error);
-      setError('Server error');
+      if (error.response && error.response.data) {
+        // Log the response data and set error message
+        console.error('Login error:', error.response.data);
+        setError(error.response.data.message || 'Server error');
+        if(error.response.data.register){
+          alert('User does not exist moving to Register page');
+        navigate('/register');}
+      } else {
+        // Log the error message
+        console.error('Login error:', error.message);
+        setError('Server error');
+      }
     }
   };
-  
 
   return (
     <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>

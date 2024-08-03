@@ -139,6 +139,7 @@ const ProblemAdd = () => {
                     label="Difficulty"
                     value={difficulty}
                     onChange={(e) => setDifficulty(e.target.value)}
+                    required
                     fullWidth
                     sx={{ mb: 2 }}
                 />

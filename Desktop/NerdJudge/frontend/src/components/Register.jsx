@@ -42,7 +42,8 @@ const Register = () => {
         } catch (error) {
             console.error('Registration Error:', error);
             setError('User Exists');
-            navigate('/login')
+            alert('User Exists Taking to login page');
+            navigate('/login');
         }
     };
 

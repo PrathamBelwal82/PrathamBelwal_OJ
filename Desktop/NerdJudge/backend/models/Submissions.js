@@ -21,6 +21,10 @@ const SubmissionSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  verdict:{
+    type: Boolean,
+    default: false,
+  }
 });
 
 module.exports = mongoose.model('Submission', SubmissionSchema);

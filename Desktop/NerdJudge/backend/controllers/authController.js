@@ -21,11 +21,13 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ email });
     console.log(user);
     if (!user) {
-      return res.status(404).json({ message: 'User does not exist', register: true });
+      return res.status(404).json({ message: 'User does not exist Pls Register', register: true });
     }
     
     const isMatch = await bcrypt.compare(password, user.password);
+    
     console.log(isMatch);
+
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -40,7 +42,7 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ message: 'Invalid password' });
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 

@@ -1,5 +1,3 @@
-// src/components/UserSubmissions.jsx
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
@@ -19,7 +17,7 @@ const UserSubmissions = () => {
     }
 
     try {
-      const response = await axios.get(`https://backend.nerdjudge.me/submissions/usersubmissions`, {
+      const response = await axios.get('https://backend.nerdjudge.me/submissions/usersubmissions', {
         headers: { Authorization: `Bearer ${user.token}` },
         params: { page, limit: 7 },
         withCredentials: true,
@@ -61,6 +59,7 @@ const UserSubmissions = () => {
                 <TableRow>
                   <TableCell>Submission ID</TableCell>
                   <TableCell>Submission Time</TableCell>
+                  <TableCell>Verdict</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -72,6 +71,16 @@ const UserSubmissions = () => {
                       </Link>
                     </TableCell>
                     <TableCell>{new Date(submission.submittedAt).toLocaleString()}</TableCell>
+                    <TableCell>
+                      <Typography
+                        sx={{
+                          color: submission.verdict ? 'green' : 'red',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {submission.verdict ? 'Accepted' : 'Rejected'}
+                      </Typography>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
