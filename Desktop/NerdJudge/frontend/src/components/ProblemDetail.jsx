@@ -85,7 +85,7 @@ function ProblemDetail() {
       }
     } catch (error) {
       console.error('Error submitting:', error);
-      setMessage('Failed to submit');
+      setMessage('Compiler Error or TLE');
     }
   };
 
@@ -99,8 +99,10 @@ function ProblemDetail() {
     try {
       const { data } = await axios.post('https://backend.nerdjudge.me/execute/run', payload);
       setOutput(data.output);
+      setMessage('');
     } catch (error) {
-      console.log('Error executing code:', error.response);
+      console.log('Error executing code:', error);
+      setMessage('Compiler Error or TLE');
     }
   };
 

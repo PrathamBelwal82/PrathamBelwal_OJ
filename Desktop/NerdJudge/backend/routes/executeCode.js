@@ -17,6 +17,8 @@ router.post("/run", async (req, res) => {
       res.json({ filePath, inputPath, output });
   } catch (error) {
       res.status(500).json({ error: error });
+      
+      console.error(`Error: ${error.message}`);
   }
 });
 
