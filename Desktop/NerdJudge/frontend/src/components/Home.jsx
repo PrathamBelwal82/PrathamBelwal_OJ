@@ -10,7 +10,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Function to fetch leaderboard data
+ 
   const fetchLeaderboard = async () => {
     try {
       const response = await axios.get('https://backend.nerdjudge.me/leaderboard');
@@ -23,17 +23,17 @@ const Home = () => {
     }
   };
 
-  // Fetch leaderboard data on component mount
+ 
   useEffect(() => {
     fetchLeaderboard();
-  }, []); // Empty dependency array means this effect runs once on mount
+  }, []); 
 
-  // Function to handle submission and refetch leaderboard
+ 
   const handleSubmission = async () => {
     try {
-      // Assume you have a function to handle submission
+      
       await submitProblem();
-      // Refetch leaderboard data after successful submission
+      
       fetchLeaderboard();
     } catch (error) {
       console.error('Error submitting problem:', error);

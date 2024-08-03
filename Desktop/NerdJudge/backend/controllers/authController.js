@@ -34,8 +34,7 @@ exports.login = async (req, res) => {
     
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.SECRET_KEY, { expiresIn: '15d' });
     
-    storeTokenInCookie(token, res);
-    storeuserIdInCookie(user._id, res);
+    
     res.status(200).json({
       token,
       userId: user._id.toString()
@@ -72,8 +71,7 @@ exports.register = async (req, res) => {
     });
 
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.SECRET_KEY, { expiresIn: '15d' });
-    storeuserIdInCookie(user._id, res);
-    storeTokenInCookie(token, res);
+    
     res.status(200).json({
       token,
       userId: user._id.toString()

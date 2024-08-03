@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 const AuthContext = createContext();
 
@@ -8,14 +9,14 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
+    const token = Cookies.get('token');
+    const userId = Cookies.get('userId');
     
     if (token && userId) {
       try {
         setUser({ loggedIn: true, token, userId });
       } catch (error) {
-        console.error('Error parsing token from localStorage:', error);
+        console.error('Error parsing token from cookies:', error);
       }
     }
   }, []);
@@ -31,14 +32,14 @@ const AuthProvider = ({ children }) => {
       return;
     }
     
-    localStorage.setItem('token', token);
-    localStorage.setItem('userId', userId);
+    Cookies.set('token', token, { expires: 15 });
+    Cookies.set('userId', userId, { expires: 15 });
     setUser({ loggedIn: true, token, userId });
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
+    Cookies.remove('token');
+    Cookies.remove('userId');
     setUser(null);
   };
 
