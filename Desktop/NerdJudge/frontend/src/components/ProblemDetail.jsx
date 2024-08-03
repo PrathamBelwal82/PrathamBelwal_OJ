@@ -103,6 +103,7 @@ function ProblemDetail() {
     } catch (error) {
       console.log('Error executing code:', error);
       setMessage('Compiler Error or TLE');
+      setOutput('');
     }
   };
 
@@ -190,7 +191,7 @@ function ProblemDetail() {
           {message && <p className="message">{message}</p>}
           {output && (
             <div className="output-container">
-              <h3>Test Case Results</h3>
+              <h3>Output</h3>
               <pre>{output}</pre>
             </div>
           )}
