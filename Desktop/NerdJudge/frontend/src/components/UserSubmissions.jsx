@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
-import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Link, Pagination } from '@mui/material';
+import { AppBar,Toolbar, Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Link, Pagination } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 const UserSubmissions = () => {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({ totalPages: 1, currentPage: 1 });
   const { user } = useAuth();
-
+  const navigate=useNavigate();
   const fetchSubmissions = async (page = 1) => {
-    if (!user) {
-      console.log('User is not logged in');
-      return;
-    }
+    
 
     try {
       const response = await axios.get('https://backend.nerdjudge.me/submissions/usersubmissions', {
@@ -35,18 +32,15 @@ const UserSubmissions = () => {
   };
 
   useEffect(() => {
+    if (!user) {
+      navigate('/');
+      return;
+    }
     fetchSubmissions(pagination.currentPage);
-  }, [user, pagination.currentPage]);
-
-  if (loading) {
-    return (
-      <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-        <CircularProgress />
-      </Container>
-    );
-  }
+  }, [user, pagination.currentPage, navigate]);
 
   return (
+    
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
         User Submissions
@@ -57,7 +51,7 @@ const UserSubmissions = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Submission ID</TableCell>
+                  <TableCell>Submission</TableCell>
                   <TableCell>Submission Time</TableCell>
                   <TableCell>Verdict</TableCell>
                 </TableRow>
@@ -67,7 +61,7 @@ const UserSubmissions = () => {
                   <TableRow key={submission._id}>
                     <TableCell>
                       <Link component={RouterLink} to={`/submission/${submission._id}`}>
-                        {submission._id}
+                        {submission.title}
                       </Link>
                     </TableCell>
                     <TableCell>{new Date(submission.submittedAt).toLocaleString()}</TableCell>

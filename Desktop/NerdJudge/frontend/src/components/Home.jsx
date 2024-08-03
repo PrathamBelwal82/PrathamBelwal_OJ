@@ -42,26 +42,6 @@ const Home = () => {
 
   return (
     <div style={{ minHeight: '100vh', padding: '0 20px' }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            NerdJudge
-          </Typography>
-          {user ? (
-            <div>
-              <Button color="inherit" onClick={logout}>Logout</Button>
-              <Button color="inherit" component={Link} to="/problems">Problems</Button>
-              <Button color="inherit" component={Link} to="/submissions/usersubmissions">Submissions</Button>
-              <Button color="inherit" component={Link} to="/problems/add">Add Problems</Button>
-            </div>
-          ) : (
-            <div>
-              <Button color="inherit" component={Link} to="/login">Login</Button>
-              <Button color="inherit" component={Link} to="/register">Register</Button>
-            </div>
-          )}
-        </Toolbar>
-      </AppBar>
       {!user ? (
         <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 4, border: '1px solid #ddd', borderRadius: '8px' }}>

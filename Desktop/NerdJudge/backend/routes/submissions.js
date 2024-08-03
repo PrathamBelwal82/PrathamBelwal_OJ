@@ -64,16 +64,18 @@ router.post('/submit', verifyToken, upload.single('file'), async (req, res) => {
         return res.status(404).json({ message: 'Problem not found' });
       }
 
-
+      const Title=problem.title;
       const testCases = problem.testCases || [];
       const codeFilePath = await generateFile(language, code);
       filePath=codeFilePath;
+
       const submission = new Submission({
         userId,
-        problemId,
+        title:Title,
         filePath,
         verdict:false,
       });
+      console.log({Title});
       await submission.save();
       const verdict = await Promise.all(testCases.map(async ({ input: testInput, output: expectedOutput }) => {
         const testInputFilePath = await generateInputFile(testInput);

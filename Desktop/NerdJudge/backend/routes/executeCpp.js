@@ -54,7 +54,7 @@ const executeCommand = (command, args, timeLimitMs) => {
     });
 };
 
-const executeCpp = async (language, filepath, inputPath, timeLimitMs = 60000) => {
+const executeCpp = async (language, filepath, inputPath, timeLimitMs = 10000) => {
     const jobId = path.basename(inputPath).split('.')[0];
     const outPath = path.join(outputPath, `${jobId}`);
     let command;

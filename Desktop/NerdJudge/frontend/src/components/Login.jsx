@@ -15,19 +15,12 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      console.log('Email:', email);
-      console.log('Password:', password);
       const response = await axios.post('https://backend.nerdjudge.me/login', {
         email,
         password
       }, { withCredentials: true });
 
       const { token, userId, message, register } = response.data || {};
-
-      console.log('Token:', token);
-      console.log('UserId:', userId);
-      console.log('Message:', message);
-      console.log('Register:', register);
 
       if (token && userId) {
         // Handle successful login

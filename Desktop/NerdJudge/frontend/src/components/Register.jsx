@@ -27,8 +27,6 @@ const Register = () => {
               });
           
               const { token, userId } = response.data;
-              console.log('Email:', token);
-              console.log('Password:', userId);
               
               if (token && userId) {
                 alert('Registration successful!');
@@ -48,7 +46,7 @@ const Register = () => {
     };
 
     return (
-        <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+        <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '120vh' }}>
             <Box sx={{ width: '100%', maxWidth: '400px', padding: 4, border: '1px solid #ddd', borderRadius: '8px' }}>
                 <Typography variant="h5" gutterBottom>
                     Register
