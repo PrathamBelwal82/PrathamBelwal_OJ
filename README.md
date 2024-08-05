@@ -31,7 +31,7 @@
 ## About The Project
 
 NerdJudge is an online judge where users can solve and create programming problems.
-
+[LiveProjectLink](https://www.nerdjudge.me/)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
@@ -59,32 +59,32 @@ Download Docker Desktop
 
 Download npm
 * npm
-sh
-npm install npm@latest -g
-
+ ```sh
+  npm install npm@latest -g
+  ```
 
 ### Installation
 
 Steps to run the project on localhost.
 1. Clone the repo
-   sh
+    ``` sh
    git clone https://github.com/PrathamBelwal82/PrathamBelwal_OJ.git
-   
-3.Backend
-   sh
-cd backend
- npm i
+   ```
+2.Backend
+  ``` sh
+   cd backend
+  npm i
    npm install docker
    docker build -t nerdjudge .
    docker run -p 8000:8000 nerdjudge
-   
+   ```
 
-4.Frontend
- sh
+3.Frontend
+``` sh
    cd frontend
- npm i
+    npm i
     npm run dev
-   
+   ```
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
