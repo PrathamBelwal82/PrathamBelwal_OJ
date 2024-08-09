@@ -73,7 +73,7 @@ Steps to run the project on localhost.
 2.Backend
   ``` sh
    cd backend
-  npm i
+   npm init -y
    npm install docker
    docker build -t nerdjudge .
    docker run -p 8000:8000 nerdjudge
@@ -81,8 +81,8 @@ Steps to run the project on localhost.
 
 3.Frontend
 ``` sh
-   cd frontend
-    npm i
+    cd frontend
+    npm install
     npm run dev
    ```
 
